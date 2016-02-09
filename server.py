@@ -41,6 +41,19 @@ def one_page_registration():
 
     return render_template("sample_form.html")
 
+@app.route('/one_page', methods=["POST"])
+def process_one_page():
+    """Shows successful registration"""
+
+    first = request.form.get("firstname")
+    last = request.form.get("lastname")
+    email = request.form.get("email")
+
+    return render_template("sample_success.html",
+                            firstname=first,
+                            lastname=last,
+                            email=email)
+
 # @app.route('/login', methods=['POST'])
 # def login_process():
 #     """Process login."""
