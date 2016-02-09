@@ -54,6 +54,17 @@ def process_one_page():
                             lastname=last,
                             email=email)
 
+
+@app.route('/charge')
+def payment():
+    """Payment page"""
+
+    return render_template("payment.html")
+
+# @app.route('/charge' methods=["POST"])
+# def process_payment():
+#     """Shows once a payment has been processed"""
+
 # @app.route('/login', methods=['POST'])
 # def login_process():
 #     """Process login."""
