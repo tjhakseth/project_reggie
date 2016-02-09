@@ -35,6 +35,12 @@ def user_login():
 
     return render_template("user_login_form.html")
 
+@app.route('/one_page')
+def one_page_registration():
+    """One page registration"""
+
+    return render_template("sample_form.html")
+
 # @app.route('/login', methods=['POST'])
 # def login_process():
 #     """Process login."""
