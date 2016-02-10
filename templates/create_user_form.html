@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<div class="well spaced" style="width:40%;">
+<h1>Create User Account</h1>
+
+<form action="/create_user" method="POST">
+
+    <div class="form-group">
+        <label>
+            Name
+            <input type="text" name="username" class="form-control">
+        </label>
+    </div>
+
+    <div class="form-group">
+        <label>
+            Email
+            <input type="email" name="useremail" class="form-control">
+        </label>
+    </div>
+
+    <div class="form-group">
+        <label>
+            Phone Number
+            <input type="text" name="userphone" class="form-control">
+        </label>
+    </div>
+
+    <div class="form-group">
+        <label>
+            Address
+            <input type="text" name="useraddress" class="form-control">
+        </label>
+    </div>
+
+    <div class="form-group">
+        <label>
+            Password
+            <input type="password" name="password" class="form-control">
+        </label>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Create a user account">
+    </div>
+
+</form>
+</div>
+{% endblock %}

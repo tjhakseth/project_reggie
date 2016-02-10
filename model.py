@@ -38,6 +38,7 @@ class User(db.Model):
     user_email = db.Column(db.String(100), nullable=False)
     user_phone = db.Column(db.String(30))
     user_address = db.Column(db.String(200))
+    password = db.Column(db.String(100))
 
     def __repr__(self):
         """Provides helpful representation when printed"""
@@ -98,7 +99,7 @@ def connect_to_db(app):
 
     # Configure to use our PostgreSQL database
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///reggiedb'
-    app.config['SQLALCHEMY_ECHO'] = True
+    #app.config['SQLALCHEMY_ECHO'] = True
     db.app = app
     db.init_app(app)
 
