@@ -183,7 +183,6 @@ def process_one_page():
                             firstname=first,
                             lastname=last,
                             email=email)
-
  
 @app.route('/charge')
 def payment():
