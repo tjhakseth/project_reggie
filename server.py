@@ -64,6 +64,14 @@ def company_login():
 
     return render_template("company_login_form.html")
 
+@app.route("/company_profile/<int:company_id>")
+def company_profile(company_id):
+    """Show info about company."""
+
+    company = Company.query.get(company_id)
+
+    return render_template("company_profile.html", company=company)
+
 
 @app.route('/company_login', methods=['POST'])
 def company_login_process():
@@ -86,14 +94,8 @@ def company_login_process():
     session["company_id"] = company.company_id
 
     flash("Logged in")
-    return redirect("/company/%s" % company.company_id)
+    return redirect("/company_profile/%s" % company.company_id)
 
-@app.route("/company/<int:company_id>")
-def company_detail(company_id):
-    """Show info about company."""
-
-    company = Company.query.get(company_id)
-    return render_template("company.html", company=company)
 
 
 @app.route('/create_user', methods=['GET'])
