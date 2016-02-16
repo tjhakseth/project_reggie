@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<h1>Create Event</h1>
+    <form action="/create_reg" method="POST">
+        <label>Event name:<input name="event_name" type="text" /></label>
+        <label>Number of Fields:<input name="number_of_fields" type="text"/></label>
+        <input type='submit' value="Create Registration Form"/>
+    </form>
+
+
+{% endblock %}

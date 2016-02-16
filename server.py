@@ -1,10 +1,11 @@
 from jinja2 import StrictUndefined
 
-from flask import Flask, render_template, request, flash, redirect, session
+from flask import Flask, render_template, request, flash, redirect, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
+import json
 
 # add the classes after db once established
-from model import connect_to_db, db, Company, User, Event, User_event
+from model import connect_to_db, db, Company, User, Event, FormQuestion
 
 
 app = Flask(__name__)
@@ -55,7 +56,7 @@ def process_create_company():
     db.session.commit()
 
     flash("Company %s added." % company_name)
-    return redirect("/company/%s" % new_company.company_id)
+    return redirect("/company_login")
 
 
 @app.route('/company_login', methods=['GET'])
@@ -63,14 +64,6 @@ def company_login():
     """Company login page"""
 
     return render_template("company_login_form.html")
-
-@app.route("/company_profile/<int:company_id>")
-def company_profile(company_id):
-    """Show info about company."""
-
-    company = Company.query.get(company_id)
-
-    return render_template("company_profile.html", company=company)
 
 
 @app.route('/company_login', methods=['POST'])
@@ -95,6 +88,86 @@ def company_login_process():
 
     flash("Logged in")
     return redirect("/company_profile/%s" % company.company_id)
+
+
+@app.route("/company_profile/<int:company_id>")
+def company_profile(company_id):
+    """Show info about company."""
+
+    company = Company.query.get(company_id)
+
+    return render_template("company_profile.html", company=company)
+
+
+
+@app.route('/create_event', methods=['GET'])
+def create_event():
+    """create event"""
+
+    return render_template("form.html")
+
+@app.route('/create_reg', methods=['POST'])
+def create_registration_form():
+    """create registration form"""
+
+    company_id = session.get('company_id')
+    event_name = request.form['event_name']
+    number_of_fields = int(request.form['number_of_fields'])
+
+    new_event = Event(event_name=event_name, company_id=company_id)
+
+    db.session.add(new_event)
+    db.session.commit()
+
+    return render_template("sample_form.html", new_event=new_event, 
+            number_of_fields=number_of_fields)
+
+
+@app.route("/registration_form_submit/<int:event_id>", methods=['POST'])
+def registration_form_submit(event_id):
+
+    question_labels = request.form.getlist('question_label')
+    question_types = request.form.getlist('question_type')
+
+    for i in range (len(question_labels)):
+        new_question = FormQuestion()
+        new_question.fq_label=question_labels[i],
+        new_question.fq_type=question_types[i]
+        new_question.fq_ordinal = i
+        new_question.event_id = event_id
+
+        db.session.add(new_question)
+        db.session.commit()
+
+    return render_template("sample_success.html", label=question_labels, types=question_types)
+
+
+@app.route('/one_page', methods=["POST"])
+def process_one_page():
+    """Shows successful registration"""
+
+    first = request.form.get("firstname")
+    last = request.form.get("lastname")
+    email = request.form.get("email")
+
+    return render_template("sample_success.html",
+                            firstname=first,
+                            lastname=last,
+                            email=email)
+ 
+@app.route('/charge')
+def payment():
+    """Payment page"""
+
+    return render_template("payment.html")
+
+
+
+
+
+
+
+
 
 
 
@@ -167,30 +240,6 @@ def user_detail(user_id):
     user = User.query.get(user_id)
     return render_template("user.html", user=user)
 
-@app.route('/one_page')
-def one_page_registration():
-    """One page registration"""
-
-    return render_template("sample_form.html")
-
-@app.route('/one_page', methods=["POST"])
-def process_one_page():
-    """Shows successful registration"""
-
-    first = request.form.get("firstname")
-    last = request.form.get("lastname")
-    email = request.form.get("email")
-
-    return render_template("sample_success.html",
-                            firstname=first,
-                            lastname=last,
-                            email=email)
- 
-@app.route('/charge')
-def payment():
-    """Payment page"""
-
-    return render_template("payment.html")
 
 
 

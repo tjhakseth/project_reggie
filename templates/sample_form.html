@@ -2,28 +2,25 @@
 
 {% block body %}
 
-<h1>1 Page Registration</h1>
-    <form action="/one_page" method="POST">
+<h1>Create Registration for {{ new_event.event_name }}</h1>
+    <form action="/registration_form_submit/{{ new_event.event_id }}" method="POST">
+       
+        {% for number in range(number_of_fields) %}       
+            <div class='questions'>
+                <label>Field:
+                    <input name="question_label" type="text"/>
+                    <select name="question_type">
+                        <option>Text</option>
+                        <option>Dropdown</option>
+                        <option>Radio Button</option>
+                        <option>Checkbox</option>
+                    </select>
+                </label>
+            </div>
 
-        <div class="page_one_info">
-            <label>First Name:
-                <input type="text" name="firstname" required class="form-control">
-            </label>
-        </div>
-        <div class="page_one_info">
-            <label>Last Name:
-                <input type="text" name="lastname" required class="form-control">
-            </label>
-        </div>
-        <div class="page_one_info">
-            <label>Email:
-                <input type="email" name="email" required class="form-control">
-            </label>
-        </div>
+        {% endfor %}
 
-        <div class="form-group">
-            <input type="submit" value="Register Me!">
-        </div>
+        <input type='submit' value="Save Form"/>
     </form>
 
 {% endblock %}

@@ -26,6 +26,44 @@ class Company(db.Model):
 
         return "<Company company_id=%s, company_name=%s, company_email%s>" % (self.company_id, self.company_name, self.company_email)
 
+class Event(db.Model):
+    """Create an Event in reggie"""
+
+    __tablename__ = "events"
+
+    event_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    company_id = db.Column(db.Integer, db.ForeignKey('companies.company_id'))
+    event_name = db.Column(db.String(100), nullable=False)
+    location = db.Column(db.String(100))
+    status = db.Column(db.String(30))
+
+    company = db.relationship("Company",
+                           backref=db.backref("events", order_by=event_id))
+
+    def __repr__(self):
+        """Provides helpful representation when printed"""
+
+        return "<Event event_id=%s, event_name=%s, company_id%s>" % (self.event_id, self.event_name, self.company_id)
+
+class FormQuestion(db.Model):
+    """Questions within a form"""
+
+    __tablename__ = "form_questions"
+
+    fq_id =db.Column(db.Integer, autoincrement=True, primary_key=True)
+    event_id =db.Column(db.Integer, db.ForeignKey('events.event_id'))
+    fq_label =db.Column(db.String(100), nullable=False)
+    fq_type =db.Column(db.String(100), nullable=False)
+    fq_ordinal=db.Column(db.Integer, nullable=False)
+
+    form = db.relationship("Event",
+                           backref=db.backref("questions", order_by=fq_ordinal))
+
+    def __repr__(self):
+        """Provides helpful representation when printed"""
+
+        return "<FormQuestion fq_id=%s, event_id=%s, fq_label=%s, fq_type=%s, fq_ordinal=%s>" % (self.fq_id, self.form_id, self.fq_label, self.fq_type, self.fq_ordinal)
+
 
 
 class User(db.Model):
@@ -47,48 +85,28 @@ class User(db.Model):
 
 
 
-class Event(db.Model):
-    """Event in Reggie"""
 
-    __tablename__ = "events"
+# class UserEvent(db.Model):
+#     """User events in Reggie"""
 
-    event_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    company_id = db.Column(db.Integer, db.ForeignKey('companies.company_id'))
-    event_name = db.Column(db.String(100), nullable=False)
-    location = db.Column(db.String(100), nullable=False)
-    status = db.Column(db.String(30))
+#     __tablename__ = "user_events"
 
-    company = db.relationship("Company",
-                           backref=db.backref("events", order_by=event_id))
+#     user_event_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+#     event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'))
+#     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
 
+#     event = db.relationship("Event",
+#                            backref=db.backref("user_events", order_by=user_event_id))
 
-    def __repr__(self):
-        """Provides helpful representation when printed"""
-
-        return "<Event event_id=%s, event_name=%s, company_id%s>" % (self.event_id, self.event_name, self.company_id)
-
-
-class User_event(db.Model):
-    """User events in Reggie"""
-
-    __tablename__ = "user_events"
-
-    user_event_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'))
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-
-    event = db.relationship("Event",
-                           backref=db.backref("user_events", order_by=user_event_id))
-
-    user = db.relationship("User",
-                           backref=db.backref("user_events", order_by=user_event_id))
+#     user = db.relationship("User",
+#                            backref=db.backref("user_events", order_by=user_event_id))
 
 
 
-    def __repr__(self):
-        """Provides helpful representation when printed"""
+#     def __repr__(self):
+#         """Provides helpful representation when printed"""
 
-        return "<User_event user_event_id=%s>" % (self.user_event_id)
+#         return "<User_event user_event_id=%s>" % (self.user_event_id)
 
 
 ##############################################################################

@@ -2,12 +2,23 @@
 
 {% block body %}
 
-<h1>Success!!!</h1>
+<h1>Success!!! </h1>
 
-<h2>Whoa, {{ firstname }} {{ lastname }} you are registered for the coolest event
-    ever!</h2>
 
-<h3>An email was sent to {{ email }} to verify the information!</h3>
+<p>
+{% for l in label %}
+    {{ l }}
+{% endfor %}
+
+{% for t in types %}
+    {{ t }}
+{% endfor %}
+
+
+</p>
+
+
+
 
 
 {% endblock %}
