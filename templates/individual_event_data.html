@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block body %}
+
+
+<div class="well spaced">
+    <h2>Attendee: {{ user.user_name }}</h2>
+    </br>
+    <h2> Event: {{ event.event_name }}</h2>
+
+    <table>
+        <tr>
+            {% for question in event.questions %}
+                <th> {{ question.label }}</th>
+            {% endfor %}
+        </tr>
+        <tr>
+            {% for answer in user.answers %}
+                <td> {{ answer.value }}<td>   
+            {% endfor %}
+        </tr>     
+    </table>
+    <form action="/event_profile/{{ event.event_id }}/data/{{ user.user_id}}" method='POST'>
+        <input type='submit' value='DELETE REGISTRATION'>
+    </form>
+        
+                
+
+{% endblock %}

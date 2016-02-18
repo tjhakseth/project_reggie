@@ -267,6 +267,7 @@ def event_submit(event_id):
 
     return redirect("/user_profile/%s" % user_id)
 
+
 @app.route("/event_profile/<int:event_id>/data", methods=['GET'])
 def event_data(event_id):
 
@@ -276,8 +277,35 @@ def event_data(event_id):
     for answer in event.answers:
         answers.add(answer.event)
 
-    return render_template("event_data.html", event=event, answers=answers)
+    user_id = answer.user_id
 
+    return render_template("event_data.html", event=event, answers=answers, user_id=user_id)
+
+@app.route("/event_profile/<int:event_id>/data/<int:user_id>", methods=['GET'])
+def individual_event_data(event_id, user_id):
+
+    event = Event.query.get(event_id)
+    user = User.query.get(user_id)
+    answers = set()
+
+    for answer in event.answers:
+        answers.add(answer.event)
+
+    return render_template("individual_event_data.html", event=event, answers=answers, user=user)
+
+
+@app.route("/event_profile/<int:event_id>/data/<int:user_id>", methods=['POST'])
+def delete_record(event_id, user_id):
+
+    user = User.query.get(user_id)
+    event = Event.query.get(event_id)
+    answers_for_user_and_event = Answer.query.filter_by(user_id=user_id, event_id=event_id).all()
+
+    for answer in answers_for_user_and_event:
+        db.session.delete(answer)
+        db.session.commit()
+
+    return redirect("/event_profile/%s/data" % event_id)
 
 
 

@@ -6,7 +6,7 @@
   <h2> welcome {{ user.user_name }} </h2>
     <p> 
         {% for event in events %} 
-            <a href="http://localhost:5000/event_profile/{{ event.event_id }}"/>
+            <a href="/event_profile/{{ event.event_id }}/data/{{ user.user_id }}"/>
                 {{ event.event_name }}</a>
         {% endfor %}
     </p>

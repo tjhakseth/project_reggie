@@ -10,12 +10,14 @@
                     {% for question in event.questions %}
                         <th> {{ question.label }}</th>
                     {% endfor %}
+                        <th>Edit Record</th>
                 </tr>
                 <tr>
                     {% for answer in event.answers %}
-                        <td> {{ answer.value }}
+                        <td> {{ answer.value }}<td>   
                     {% endfor %}
-                </tr>        
+                        <td> <a href="/event_profile/{{ event.event_id }}/data/{{ user_id }}">Edit Record</a> </td>
+                </tr>   
             </table>
         
                 
