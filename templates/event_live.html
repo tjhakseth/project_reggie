@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<div class="well spaced" style="width:97%">
+    <h2>{{ event.event_name }}</h2>
+    <form action= "/event_profile/{{ event.event_id }}/live" method="POST">
+        {% for question in event.questions %}
+            <div>
+                <label for="questions_{{ question.ordinal }}">
+                    {{ question.label }}
+                </label>
+            </div>
+            <div>
+                {% if question.selector == "Text" %}
+                    <input name="question" type="text"/>
+                {% elif question.selector == "Dropdown" %}
+                    <select name="question">
+                        <option>A</option>
+                        <option>B</option>
+                        <option>C</option>
+                    </select>
+                {% elif question.selector == "Radio Button" %}
+                    <input name="question" type="radio" value="Yes" />Yes
+                    <input name="question" type="radio" value="No"/>No
+                {% elif question.selector == "Checkbox" %}
+                    <input name="question" type="checkbox" value="Going" />Going
+                {% else %}
+                    <p> I dunno what you are talking about</p>
+                {% endif %}
+            </div>
+            <div>
+                
+            </div>
+        {% endfor %}
+
+        <input type="submit" value="Submit Registration"/>
+    </form>
+
+</div>
+
+{% endblock %}

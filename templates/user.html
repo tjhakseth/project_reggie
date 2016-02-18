@@ -1,7 +1,17 @@
 {% extends 'base.html' %}
-{% block content %}
+
+{% block body %}
 <br>
 <div class="well spaced" style="width:97%">
-  <h2>{{ user.user_name }} ({{ user.user_email }})</h2>
+  <h2> welcome {{ user.user_name }} {{ user.user_email }}</h2>
+
+  <p> 
+        {% for event in user.answers %} 
+            <a href="http://localhost:5000/event_profile/{{ event.event_id }}"/>{{ event_id }}</a>
+        {% endfor %}
+    </p>
+  
+
 </div>
+
 {% endblock %}

@@ -1,18 +1,15 @@
 from jinja2 import StrictUndefined
-
 from flask import Flask, render_template, request, flash, redirect, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 import json
-
 # add the classes after db once established
-from model import connect_to_db, db, Company, User, Event, FormQuestion
+from model import connect_to_db, db, Company, User, Event, Question, Answer
 
 
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
 app.secret_key = "Reggieevents"
-
 # Normally, if you use an undefined variable in Jinja2, it fails silently.
 # This is horrible. Fix this so that, instead, it raises an error.
 app.jinja_env.undefined = StrictUndefined
@@ -43,7 +40,6 @@ def process_create_company():
     company_phone = request.form["companyphone"]
     company_address = request.form["companyaddress"]
     password = request.form["password"]
-
 
     new_company = Company(company_name=company_name,
                             company_email=company_email,
@@ -99,78 +95,6 @@ def company_profile(company_id):
     return render_template("company_profile.html", company=company)
 
 
-
-@app.route('/create_event', methods=['GET'])
-def create_event():
-    """create event"""
-
-    return render_template("form.html")
-
-@app.route('/create_reg', methods=['POST'])
-def create_registration_form():
-    """create registration form"""
-
-    company_id = session.get('company_id')
-    event_name = request.form['event_name']
-    number_of_fields = int(request.form['number_of_fields'])
-
-    new_event = Event(event_name=event_name, company_id=company_id)
-
-    db.session.add(new_event)
-    db.session.commit()
-
-    return render_template("sample_form.html", new_event=new_event, 
-            number_of_fields=number_of_fields)
-
-
-@app.route("/registration_form_submit/<int:event_id>", methods=['POST'])
-def registration_form_submit(event_id):
-
-    question_labels = request.form.getlist('question_label')
-    question_types = request.form.getlist('question_type')
-
-    for i in range (len(question_labels)):
-        new_question = FormQuestion()
-        new_question.fq_label=question_labels[i],
-        new_question.fq_type=question_types[i]
-        new_question.fq_ordinal = i
-        new_question.event_id = event_id
-
-        db.session.add(new_question)
-        db.session.commit()
-
-    return render_template("sample_success.html", label=question_labels, types=question_types)
-
-
-@app.route('/one_page', methods=["POST"])
-def process_one_page():
-    """Shows successful registration"""
-
-    first = request.form.get("firstname")
-    last = request.form.get("lastname")
-    email = request.form.get("email")
-
-    return render_template("sample_success.html",
-                            firstname=first,
-                            lastname=last,
-                            email=email)
- 
-@app.route('/charge')
-def payment():
-    """Payment page"""
-
-    return render_template("payment.html")
-
-
-
-
-
-
-
-
-
-
-
 @app.route('/create_user', methods=['GET'])
 def create_user():
     """Show form for users to signup."""
@@ -189,7 +113,6 @@ def process_create_user():
     user_address = request.form["useraddress"]
     password = request.form["password"]
 
-
     new_user = User(user_name=user_name,
                     user_email=user_email,
                     user_phone=user_phone,
@@ -200,7 +123,7 @@ def process_create_user():
     db.session.commit()
 
     flash("User %s added." % user_email)
-    return redirect("/user/%s" % new_user.user_id)
+    return redirect("/user_login")
 
 
 @app.route('/user_login', methods=['GET'])
@@ -208,6 +131,7 @@ def user_login():
     """user login page"""
 
     return render_template("user_login_form.html")
+
 
 @app.route('/user_login', methods=['POST'])
 def user_login_process():
@@ -238,9 +162,114 @@ def user_detail(user_id):
     """Show info about user."""
 
     user = User.query.get(user_id)
+    
     return render_template("user.html", user=user)
 
 
+@app.route('/create_event', methods=['GET'])
+def create_event():
+    """create event"""
+
+    return render_template("form.html")
+
+
+@app.route("/event_profile/<int:event_id>")
+def event_profile(event_id):
+    """Show info about company."""
+
+    event = Event.query.get(event_id)
+
+    return render_template("event_profile.html", event=event)
+
+
+@app.route('/create_reg', methods=['POST'])
+def create_registration_form():
+    """create registration form"""
+
+    company_id = session.get('company_id')
+    event_name = request.form['event_name']
+    number_of_fields = int(request.form['number_of_fields'])
+    payment_page = request.form['payment_page']
+
+    new_event = Event(event_name=event_name, company_id=company_id, number_of_fields=number_of_fields, payment_page=payment_page)
+
+    db.session.add(new_event)
+    db.session.commit()
+
+    return render_template("sample_form.html", new_event=new_event, 
+            number_of_fields=number_of_fields)
+
+
+@app.route("/registration_form_submit/<int:event_id>", methods=['POST'])
+def registration_form_submit(event_id):
+
+    labels = request.form.getlist('label')
+    selectors = request.form.getlist('selector')
+
+    for i in range (len(labels)):
+        new_question = Question()
+        new_question.label=labels[i]
+        new_question.selector=selectors[i]
+        new_question.ordinal = i
+        new_question.event_id = event_id
+
+        db.session.add(new_question)
+        db.session.commit()
+
+    flash("Successfully created event") 
+
+    return redirect("/event_profile/%s" % event_id)
+
+
+@app.route("/event_profile/<int:event_id>/live", methods=['GET'])
+def event_profile_live(event_id):
+
+    event = Event.query.get(event_id)
+
+    return render_template("event_live.html", event=event)
+
+
+
+@app.route("/event_profile/<int:event_id>/live", methods=['POST'])
+def event_submit(event_id):
+
+    event = Event.query.get(event_id)
+    user_id = session.get("user_id")
+    questions = event.questions
+    values = request.form.getlist("question")
+    
+    question_ids = [q.id for q in questions]
+
+    if not user_id:
+        flash("Please log in to register for event")
+        return redirect("/")
+
+    for i in range (len(questions)):
+        new_answer = Answer()
+        new_answer.value = values[i]
+        new_answer.question_id = question_ids[i]
+        new_answer.user_id = user_id
+
+        db.session.add(new_answer)
+        db.session.commit()
+
+    flash("Successfully Registered for event")
+
+
+    return redirect("/user/%s" % user_id)
+   
+    # {% if event.payment_page == True %}
+ #          <script
+ #            src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+ #            data-key="pk_test_6pRNASCoBOKtIshFeQd4XMUh"
+ #            data-image="/img/documentation/checkout/marketplace.png"
+ #            data-name="Stripe.com"
+ #            data-description="2 widgets"
+ #            data-amount="2000"
+ #            data-locale="auto">
+ #          </script>
+ #        {% endif %}
+ #        </div> 
 
 
 

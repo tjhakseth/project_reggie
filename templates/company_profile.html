@@ -5,6 +5,11 @@
   <h2> Welcome {{ company.contact_person }} at {{ company.company_name }}</h2>
 
   <a href="http://localhost:5000/create_event">Create Event</a>
+    <p> 
+        {% for event in company.events %} 
+            <a href="http://localhost:5000/event_profile/{{ event.event_id }}"/>{{ event.event_name }}</a>
+        {% endfor %}
+    </p>
 
 </div>
 {% endblock %}

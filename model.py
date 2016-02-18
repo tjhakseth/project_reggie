@@ -34,6 +34,8 @@ class Event(db.Model):
     event_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     company_id = db.Column(db.Integer, db.ForeignKey('companies.company_id'))
     event_name = db.Column(db.String(100), nullable=False)
+    number_of_fields = db.Column(db.Integer, nullable=False)
+    payment_page =db.Column(db.Boolean, nullable=True)
     location = db.Column(db.String(100))
     status = db.Column(db.String(30))
 
@@ -45,25 +47,49 @@ class Event(db.Model):
 
         return "<Event event_id=%s, event_name=%s, company_id%s>" % (self.event_id, self.event_name, self.company_id)
 
-class FormQuestion(db.Model):
+class Question(db.Model):
     """Questions within a form"""
 
-    __tablename__ = "form_questions"
+    __tablename__ = "questions"
 
-    fq_id =db.Column(db.Integer, autoincrement=True, primary_key=True)
+    id =db.Column(db.Integer, autoincrement=True, primary_key=True)
     event_id =db.Column(db.Integer, db.ForeignKey('events.event_id'))
-    fq_label =db.Column(db.String(100), nullable=False)
-    fq_type =db.Column(db.String(100), nullable=False)
-    fq_ordinal=db.Column(db.Integer, nullable=False)
+    label =db.Column(db.String(100), nullable=False)
+    selector =db.Column(db.String(100), nullable=False)
+    ordinal=db.Column(db.Integer, nullable=False)
 
     form = db.relationship("Event",
-                           backref=db.backref("questions", order_by=fq_ordinal))
+                           backref=db.backref("questions", order_by=ordinal))
 
     def __repr__(self):
         """Provides helpful representation when printed"""
 
-        return "<FormQuestion fq_id=%s, event_id=%s, fq_label=%s, fq_type=%s, fq_ordinal=%s>" % (self.fq_id, self.form_id, self.fq_label, self.fq_type, self.fq_ordinal)
+        return "<Question id=%s, event_id=%s, label=%s, selector=%s, ordinal=%s>" % (self.id, self.event_id, self.label, self.selector, self.ordinal)
 
+class Answer(db.Model):
+    """User Answers with a form"""
+
+    __tablename__ = "answers"
+
+    id =db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_id =db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    event_id =db.Column(db.Integer, db.ForeignKey('events.event_id'))
+    question_id =db.Column(db.Integer, db.ForeignKey('questions.id'))
+    value =db.Column(db.String(100))
+
+    user = db.relationship("User",
+                           backref=db.backref("answers"))
+
+    event = db.relationship("Event",
+                           backref=db.backref("answers"))
+
+    question = db.relationship("Question",
+                           backref=db.backref("answers"))
+
+    def __repr__(self):
+        """Provides helpful representation when printed"""
+
+        return "<Answer id=%s, user_id=%s, question_id=%s, value=%s>" % (self.id, self.user_id, self.question_id, self.value)
 
 
 class User(db.Model):

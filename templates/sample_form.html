@@ -8,8 +8,8 @@
         {% for number in range(number_of_fields) %}       
             <div class='questions'>
                 <label>Field:
-                    <input name="question_label" type="text"/>
-                    <select name="question_type">
+                    <input name="label" type="text"/>
+                    <select name="selector">
                         <option>Text</option>
                         <option>Dropdown</option>
                         <option>Radio Button</option>
@@ -19,7 +19,6 @@
             </div>
 
         {% endfor %}
-
         <input type='submit' value="Save Form"/>
     </form>
 
