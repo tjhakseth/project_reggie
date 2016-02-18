@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block body %}
+
+
+<div class="well spaced">
+    <h2>{{ event.event_name }}</h2>
+
+            <table>
+                <tr>
+                    {% for question in event.questions %}
+                        <th> {{ question.label }}</th>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for answer in event.answers %}
+                        <td> {{ answer.value }}
+                    {% endfor %}
+                </tr>        
+            </table>
+        
+                
+
+{% endblock %}

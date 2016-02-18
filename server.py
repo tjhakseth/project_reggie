@@ -162,8 +162,14 @@ def user_detail(user_id):
     """Show info about user."""
 
     user = User.query.get(user_id)
+    events = set()
 
-    return render_template("user_profile.html", user=user)
+    for answer in user.answers:
+        events.add(answer.event)
+
+    #look at optimzing this
+
+    return render_template("user_profile.html", user=user, events=events)
 
 
 @app.route('/create_event', methods=['GET'])
@@ -251,6 +257,7 @@ def event_submit(event_id):
         new_answer.value = values[i]
         new_answer.question_id = question_ids[i]
         new_answer.user_id = user_id
+        new_answer.event_id= event_id
 
         db.session.add(new_answer)
         db.session.commit()
@@ -259,6 +266,17 @@ def event_submit(event_id):
 
 
     return redirect("/user_profile/%s" % user_id)
+
+@app.route("/event_profile/<int:event_id>/data", methods=['GET'])
+def event_data(event_id):
+
+    event = Event.query.get(event_id)
+    answers = set()
+
+    for answer in event.answers:
+        answers.add(answer.event)
+
+    return render_template("event_data.html", event=event, answers=answers)
 
 
 
