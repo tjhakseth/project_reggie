@@ -36,6 +36,8 @@ class Event(db.Model):
     event_name = db.Column(db.String(100), nullable=False)
     number_of_fields = db.Column(db.Integer, nullable=False)
     payment_page =db.Column(db.Boolean, nullable=True)
+    color =db.Column(db.String(100))
+    logo =db.Column(db.String(100))
     location = db.Column(db.String(100))
     status = db.Column(db.String(30))
 

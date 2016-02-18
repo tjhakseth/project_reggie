@@ -154,23 +154,23 @@ def user_login_process():
     session["user_id"] = user.user_id
 
     flash("Logged in")
-    return redirect("/user/%s" % user.user_id)
+    return redirect("/user_profile/%s" % user.user_id)
 
 
-@app.route("/user/<int:user_id>")
+@app.route("/user_profile/<int:user_id>")
 def user_detail(user_id):
     """Show info about user."""
 
     user = User.query.get(user_id)
-    
-    return render_template("user.html", user=user)
+
+    return render_template("user_profile.html", user=user)
 
 
 @app.route('/create_event', methods=['GET'])
 def create_event():
     """create event"""
 
-    return render_template("form.html")
+    return render_template("create_event.html")
 
 
 @app.route("/event_profile/<int:event_id>")
@@ -189,14 +189,16 @@ def create_registration_form():
     company_id = session.get('company_id')
     event_name = request.form['event_name']
     number_of_fields = int(request.form['number_of_fields'])
-    payment_page = request.form['payment_page']
+    color = request.form['color']
+    logo = request.form['logo']
+    payment_page = request.form.get('payment_page', False)
 
-    new_event = Event(event_name=event_name, company_id=company_id, number_of_fields=number_of_fields, payment_page=payment_page)
+    new_event = Event(event_name=event_name, company_id=company_id, number_of_fields=number_of_fields, payment_page=payment_page, color=color, logo=logo)
 
     db.session.add(new_event)
     db.session.commit()
 
-    return render_template("sample_form.html", new_event=new_event, 
+    return render_template("create_registration_form.html", new_event=new_event, 
             number_of_fields=number_of_fields)
 
 
@@ -256,21 +258,7 @@ def event_submit(event_id):
     flash("Successfully Registered for event")
 
 
-    return redirect("/user/%s" % user_id)
-   
-    # {% if event.payment_page == True %}
- #          <script
- #            src="https://checkout.stripe.com/checkout.js" class="stripe-button"
- #            data-key="pk_test_6pRNASCoBOKtIshFeQd4XMUh"
- #            data-image="/img/documentation/checkout/marketplace.png"
- #            data-name="Stripe.com"
- #            data-description="2 widgets"
- #            data-amount="2000"
- #            data-locale="auto">
- #          </script>
- #        {% endif %}
- #        </div> 
-
+    return redirect("/user_profile/%s" % user_id)
 
 
 

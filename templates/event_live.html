@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% block body %}
 
-<div class="well spaced" style="width:97%">
+
+<div class="well spaced" style="background-color: {{ event.color }}">
     <h2>{{ event.event_name }}</h2>
     <form action= "/event_profile/{{ event.event_id }}/live" method="POST">
         {% for question in event.questions %}
@@ -28,14 +29,24 @@
                     <p> I dunno what you are talking about</p>
                 {% endif %}
             </div>
-            <div>
-                
-            </div>
         {% endfor %}
+        {% if event.payment_page == True %}
+            <script
+                src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                data-key="pk_test_6pRNASCoBOKtIshFeQd4XMUh"
+                data-image="/img/documentation/checkout/marketplace.png"
+                data-name="Stripe.com"
+                data-description="2 widgets"
+                data-amount="2000"
+                data-locale="auto">
+            </script>
+        {% endif %}
+
 
         <input type="submit" value="Submit Registration"/>
     </form>
 
 </div>
+</body>
 
 {% endblock %}
