@@ -7,13 +7,13 @@
        
         {% for number in range(number_of_fields) %}       
             <div class='questions'>
-                <label>Field:
+                <label class="field">Field:
                     <input name="label" type="text"/>
-                    <select name="selector">
-                        <option>Text</option>
-                        <option>Dropdown</option>
-                        <option>Radio Button</option>
-                        <option>Checkbox</option>
+                    <select name="selector" class="opt">
+                        <option id="textbox">Text</option>
+                        <option id="dropdown">Dropdown</option>
+                        <option id="radio">Radio Button</option>
+                        <option id="checkbox">Checkbox</option>
                     </select>
                 </label>
             </div>
@@ -21,5 +21,35 @@
         {% endfor %}
         <input type='submit' value="Save Form"/>
     </form>
+
+    <script type="text/javascript">
+
+    $("#dropdown").click(options);
+    $("#radio").click(options);
+    $("#checkbox").click(options);
+    $(".opt").click(options);
+    // $(".field").click(options);
+
+    function options(evt) {
+        
+        var opts = [];
+        var opt1 = opts.push(prompt("What is your first option?"));
+
+         do {
+                var selection = confirm("Do you want to continue ?");
+
+                if( selection == true ){
+                    var ask = prompt("Another Option");
+                    opts.push(ask);
+                } else{
+                    return false;
+                }
+            return opts;
+            }
+        
+        while (selection = true);
+    }
+
+    </script>
 
 {% endblock %}
