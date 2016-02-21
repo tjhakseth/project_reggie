@@ -16,15 +16,18 @@
                     <input name="question" type="text"/>
                 {% elif question.selector == "Dropdown" %}
                     <select name="question">
-                        <option>A</option>
-                        <option>B</option>
-                        <option>C</option>
+                        {% for option in question.data %}
+                        <option>{{ option }}</option>
+                        {% endfor %}
                     </select>
                 {% elif question.selector == "Radio Button" %}
-                    <input name="question" type="radio" value="Yes" />Yes
-                    <input name="question" type="radio" value="No"/>No
+                    {% for option in question.data %}
+                    <input name="question" type="radio" value="{{ option }}" />{{ option }}
+                    {% endfor %}
                 {% elif question.selector == "Checkbox" %}
-                    <input name="question" type="checkbox" value="Going" />Going
+                    {% for option in question.data %}
+                    <input name="question" type="checkbox" value="{{ option }}"/>{{ option }}
+                    {% endfor %}
                 {% else %}
                     <p> I dunno what you are talking about</p>
                 {% endif %}

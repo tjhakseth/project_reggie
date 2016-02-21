@@ -2,6 +2,7 @@
 import heapq
 import time
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.dialects.postgresql import JSON
 
 db = SQLAlchemy()
 
@@ -59,6 +60,7 @@ class Question(db.Model):
     label =db.Column(db.String(100), nullable=False)
     selector =db.Column(db.String(100), nullable=False)
     ordinal=db.Column(db.Integer, nullable=False)
+    data=db.Column(JSON)
 
     form = db.relationship("Event",
                            backref=db.backref("questions", order_by=ordinal))

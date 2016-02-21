@@ -9,12 +9,13 @@
             <div class='questions'>
                 <label class="field">Field:
                     <input name="label" type="text"/>
-                    <select name="selector" class="opt">
+                    <select name="selector" class="type" id="type_{{ number }}">
                         <option id="textbox">Text</option>
                         <option id="dropdown">Dropdown</option>
                         <option id="radio">Radio Button</option>
                         <option id="checkbox">Checkbox</option>
                     </select>
+                    <input type="hidden" name="options" id="options_for_type_{{ number }}"/>
                 </label>
             </div>
 
@@ -23,32 +24,34 @@
     </form>
 
     <script type="text/javascript">
+    "use strict";
 
-    $("#dropdown").click(options);
-    $("#radio").click(options);
-    $("#checkbox").click(options);
-    $(".opt").click(options);
-    // $(".field").click(options);
+    $(".type").click(options);
+ 
 
-    function options(evt) {
+    function options() {
+        var $field = $(this);
         
         var opts = [];
         var opt1 = opts.push(prompt("What is your first option?"));
-
+        // debugger;
          do {
                 var selection = confirm("Do you want to continue ?");
-
-                if( selection == true ){
+                if( selection == false){
+                    break;
+                } else{
                     var ask = prompt("Another Option");
                     opts.push(ask);
-                } else{
-                    return false;
                 }
-            return opts;
             }
-        
-        while (selection = true);
+
+        while (selection = true)
+
+        console.log (opts);
+        $("#options_for_" + $field.attr("id")).val(JSON.stringify(opts));
     }
+
+    // $.post("/registration_form_submit/{{ new_event.event_id }}", { opts: opts })
 
     </script>
 

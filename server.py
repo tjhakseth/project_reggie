@@ -213,6 +213,12 @@ def registration_form_submit(event_id):
 
     labels = request.form.getlist('label')
     selectors = request.form.getlist('selector')
+    data = request.form.getlist('options')
+
+
+
+    print "*****************************************"
+    print data
 
     for i in range (len(labels)):
         new_question = Question()
@@ -220,6 +226,11 @@ def registration_form_submit(event_id):
         new_question.selector=selectors[i]
         new_question.ordinal = i
         new_question.event_id = event_id
+        field_options = data[i]
+        if field_options:
+            new_question.data = json.loads(data[i])
+        else:
+            new_question.data = None
 
         db.session.add(new_question)
         db.session.commit()
