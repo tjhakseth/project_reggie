@@ -2,7 +2,9 @@
 import heapq
 import time
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.dialects.postgresql import JSON
+from sqlalchemy.dialects.postgresql import JSON, UUID
+from sqlalchemy import text
+
 
 db = SQLAlchemy()
 
@@ -14,7 +16,7 @@ class Company(db.Model):
 
     __tablename__ = "companies"
 
-    company_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    company_id = db.Column(UUID, server_default=text("uuid_generate_v4()"), primary_key=True)
     company_name = db.Column(db.String(100), nullable=False)
     company_email = db.Column(db.String(100), nullable=False)
     contact_person = db.Column(db.String(50))
@@ -32,8 +34,8 @@ class Event(db.Model):
 
     __tablename__ = "events"
 
-    event_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    company_id = db.Column(db.Integer, db.ForeignKey('companies.company_id'))
+    event_id = db.Column(UUID, server_default=text("uuid_generate_v4()"), primary_key=True)
+    company_id = db.Column(UUID, db.ForeignKey('companies.company_id'))
     event_name = db.Column(db.String(100), nullable=False)
     number_of_fields = db.Column(db.Integer, nullable=False)
     payment_page =db.Column(db.Boolean, nullable=True)
@@ -55,8 +57,8 @@ class Question(db.Model):
 
     __tablename__ = "questions"
 
-    id =db.Column(db.Integer, autoincrement=True, primary_key=True)
-    event_id =db.Column(db.Integer, db.ForeignKey('events.event_id'))
+    id =db.Column(UUID, server_default=text("uuid_generate_v4()"), primary_key=True)
+    event_id =db.Column(UUID, db.ForeignKey('events.event_id'))
     label =db.Column(db.String(100), nullable=False)
     selector =db.Column(db.String(100), nullable=False)
     ordinal=db.Column(db.Integer, nullable=False)
@@ -75,10 +77,10 @@ class Answer(db.Model):
 
     __tablename__ = "answers"
 
-    id =db.Column(db.Integer, autoincrement=True, primary_key=True)
-    user_id =db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    event_id =db.Column(db.Integer, db.ForeignKey('events.event_id'))
-    question_id =db.Column(db.Integer, db.ForeignKey('questions.id'))
+    id =db.Column(UUID, server_default=text("uuid_generate_v4()"), primary_key=True)
+    user_id =db.Column(UUID, db.ForeignKey('users.user_id'))
+    event_id =db.Column(UUID, db.ForeignKey('events.event_id'))
+    question_id =db.Column(UUID, db.ForeignKey('questions.id'))
     value =db.Column(db.String(100))
 
     user = db.relationship("User",
@@ -101,7 +103,7 @@ class User(db.Model):
 
     __tablename__ = "users"
 
-    user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_id = db.Column(UUID, server_default=text("uuid_generate_v4()"), primary_key=True)
     user_name = db.Column(db.String(100), nullable=False)
     user_email = db.Column(db.String(100), nullable=False)
     user_phone = db.Column(db.String(30))

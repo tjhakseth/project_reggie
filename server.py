@@ -1,19 +1,27 @@
 from jinja2 import StrictUndefined
-from flask import Flask, render_template, request, flash, redirect, session, jsonify
+from flask import Flask, Response, render_template, request, flash, redirect, session, jsonify, url_for
+from flask.ext.uuid import FlaskUUID
 from flask_debugtoolbar import DebugToolbarExtension
+import bcrypt
 import json
+from csvkit import CSVKitWriter, CSVKitReader
+import sys
+import uuid
+from StringIO import StringIO
+
 # add the classes after db once established
 from model import connect_to_db, db, Company, User, Event, Question, Answer
 
 
 app = Flask(__name__)
+#FlaskUUID(app)
+
 
 # Required to use Flask sessions and the debug toolbar
 app.secret_key = "Reggieevents"
 # Normally, if you use an undefined variable in Jinja2, it fails silently.
 # This is horrible. Fix this so that, instead, it raises an error.
 app.jinja_env.undefined = StrictUndefined
-
 
 @app.route('/')
 def homepage():
@@ -40,19 +48,25 @@ def process_create_company():
     company_phone = request.form["companyphone"]
     company_address = request.form["companyaddress"]
     password = request.form["password"]
+    password_bytes = password.encode('utf-8')
+
+    hashed = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
 
     new_company = Company(company_name=company_name,
                             company_email=company_email,
                             contact_person=contact_person,
                             company_phone=company_phone,
                             company_address=company_address,
-                            password=password)
+                            password=hashed)
 
     db.session.add(new_company)
     db.session.commit()
 
+    session["company_id"] = new_company.company_id
+
     flash("Company %s added." % company_name)
-    return redirect("/company_login")
+    flash("Logged in")
+    return redirect("/company_profile/%s" % new_company.company_id)
 
 
 @app.route('/company_login', methods=['GET'])
@@ -69,15 +83,20 @@ def company_login_process():
     # Get form variables
     company_email = request.form["company_email"]
     password = request.form["password"]
+    password_bytes = password.encode('utf-8')
+
+    hashed = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
 
     company = Company.query.filter_by(company_email=company_email).first()
 
     if not company:
-        flash("No such company")
+        flash("Incorrect login credentials")
         return redirect("/company_login")
 
-    if company.password != password:
-        flash("Incorrect password")
+    if bcrypt.hashpw(password_bytes, hashed) == hashed:
+        flash("Welcome")
+    else:
+        flash("Incorrect login credentials")
         return redirect("/company_login")
 
     session["company_id"] = company.company_id
@@ -86,11 +105,15 @@ def company_login_process():
     return redirect("/company_profile/%s" % company.company_id)
 
 
-@app.route("/company_profile/<int:company_id>")
+@app.route("/company_profile/<company_id>")
 def company_profile(company_id):
     """Show info about company."""
 
     company = Company.query.get(company_id)
+    company_id = session.get("company_id")
+
+    if company.company_id != company_id:
+        raise Exception("Company is not logged in.")
 
     return render_template("company_profile.html", company=company)
 
@@ -112,18 +135,24 @@ def process_create_user():
     user_phone = request.form["userphone"]
     user_address = request.form["useraddress"]
     password = request.form["password"]
+    password_bytes = password.encode('utf-8')
+
+    hashed = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
 
     new_user = User(user_name=user_name,
                     user_email=user_email,
                     user_phone=user_phone,
                     user_address=user_address,
-                    password=password)
+                    password=hashed)
 
     db.session.add(new_user)
     db.session.commit()
 
+    session["user_id"] = new_user.user_id
+
     flash("User %s added." % user_email)
-    return redirect("/user_login")
+    flash("Logged in")
+    return redirect("/user_profile/%s" % new_user.user_id)
 
 
 @app.route('/user_login', methods=['GET'])
@@ -140,15 +169,20 @@ def user_login_process():
     # Get form variables
     user_email = request.form["email"]
     password = request.form["password"]
+    password_bytes = password.encode('utf-8')
+
+    hashed = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
 
     user = User.query.filter_by(user_email=user_email).first()
 
     if not user:
-        flash("No such user")
+        flash("Incorrect login credentials")
         return redirect("/user_login")
 
-    if user.password != password:
-        flash("Incorrect password")
+    if bcrypt.hashpw(password_bytes, hashed) == hashed:
+        flash("Welcome")
+    else:
+        flash("Incorrect login credentials")
         return redirect("/user_login")
 
     session["user_id"] = user.user_id
@@ -157,11 +191,16 @@ def user_login_process():
     return redirect("/user_profile/%s" % user.user_id)
 
 
-@app.route("/user_profile/<int:user_id>")
+@app.route("/user_profile/<user_id>")
 def user_detail(user_id):
     """Show info about user."""
 
     user = User.query.get(user_id)
+    user_id = session.get("user_id")
+
+    if user.user_id != user_id:
+        raise Exception("User is not logged in.")
+
     events = set()
 
     for answer in user.answers:
@@ -179,11 +218,16 @@ def create_event():
     return render_template("create_event.html")
 
 
-@app.route("/event_profile/<int:event_id>")
+@app.route("/event_profile/<event_id>")
 def event_profile(event_id):
     """Show info about company."""
 
     event = Event.query.get(event_id)
+    # company = event.company_id
+    # company_id = session.get("company_id")
+
+    # if company != company_id:
+    #     raise Exception("Company is not logged in.")
 
     return render_template("event_profile.html", event=event)
 
@@ -208,17 +252,12 @@ def create_registration_form():
             number_of_fields=number_of_fields)
 
 
-@app.route("/registration_form_submit/<int:event_id>", methods=['POST'])
+@app.route("/registration_form_submit/<event_id>", methods=['POST'])
 def registration_form_submit(event_id):
 
     labels = request.form.getlist('label')
     selectors = request.form.getlist('selector')
     data = request.form.getlist('options')
-
-
-
-    print "*****************************************"
-    print data
 
     for i in range (len(labels)):
         new_question = Question()
@@ -240,7 +279,7 @@ def registration_form_submit(event_id):
     return redirect("/event_profile/%s" % event_id)
 
 
-@app.route("/event_profile/<int:event_id>/live", methods=['GET'])
+@app.route("/event_profile/<event_id>/live", methods=['GET'])
 def event_profile_live(event_id):
 
     event = Event.query.get(event_id)
@@ -248,14 +287,14 @@ def event_profile_live(event_id):
     return render_template("event_live.html", event=event)
 
 
-
-@app.route("/event_profile/<int:event_id>/live", methods=['POST'])
+@app.route("/event_profile/<event_id>/live", methods=['POST'])
 def event_submit(event_id):
 
     event = Event.query.get(event_id)
     user_id = session.get("user_id")
     questions = event.questions
     values = request.form.getlist("question")
+    # try to make a dictionary, answers need to match up with questions, change the for loop to answer in answers from the loop
     
     question_ids = [q.id for q in questions]
 
@@ -279,10 +318,15 @@ def event_submit(event_id):
     return redirect("/user_profile/%s" % user_id)
 
 
-@app.route("/event_profile/<int:event_id>/data", methods=['GET'])
+@app.route("/event_profile/<event_id>/data", methods=['GET'])
 def event_data(event_id):
 
     event = Event.query.get(event_id)
+    company_id = session.get("company_id")
+
+    # if company.company_id != company_id:
+    #     raise Exception("Company is not logged in.")
+
     answers = set()
 
     for answer in event.answers:
@@ -292,11 +336,51 @@ def event_data(event_id):
 
     return render_template("event_data.html", event=event, answers=answers, user_id=user_id)
 
-@app.route("/event_profile/<int:event_id>/data/<int:user_id>", methods=['GET'])
+# @app.route("/event_profile/<event_id>/data", methods=['GET'])
+# def upload_csv(event_id):
+
+
+#     filename = 'test.csv'
+#     with open(filename, 'rb') as f:
+#     reader = csv.reader(f)
+#     try:
+#         for row in reader:
+#             print row
+#     except csv.Error as e:
+#         sys.exit('file %s, line %d: %s' % (filename, reader.line_num, e))
+
+#     return render_template("test.html")
+
+@app.route("/event_profile/<event_id>/csvdata", methods=['GET'])
+def download_to_csv(event_id):
+
+    event = Event.query.get(event_id)
+    headers = []
+    for question in event.questions:
+        headers.append(question.label)
+
+    data = []
+    for answer in event.answers:
+        data.append(answer.value)
+
+    f = StringIO()
+    writer = CSVKitWriter(f)
+    writer.writerow(headers)
+    writer.writerow(data)
+
+    return Response(f.getvalue(), mimetype='text/csv')
+
+
+@app.route("/event_profile/<event_id>/data/<user_id>", methods=['GET'])
 def individual_event_data(event_id, user_id):
 
     event = Event.query.get(event_id)
     user = User.query.get(user_id)
+    company_id = session.get("company_id")
+
+    if company.company_id != company_id:
+        raise Exception("Company is not logged in.")
+
     answers = set()
 
     for answer in event.answers:
@@ -305,11 +389,16 @@ def individual_event_data(event_id, user_id):
     return render_template("individual_event_data.html", event=event, answers=answers, user=user)
 
 
-@app.route("/event_profile/<int:event_id>/data/<int:user_id>", methods=['POST'])
+@app.route("/event_profile/<event_id>/data/<user_id>", methods=['POST'])
 def delete_record(event_id, user_id):
 
     user = User.query.get(user_id)
     event = Event.query.get(event_id)
+    company_id = session.get("company_id")
+
+    if company.company_id != company_id:
+        raise Exception("Company is not logged in.")
+
     answers_for_user_and_event = Answer.query.filter_by(user_id=user_id, event_id=event_id).all()
 
     for answer in answers_for_user_and_event:

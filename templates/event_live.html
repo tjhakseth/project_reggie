@@ -1,8 +1,12 @@
 {% extends 'base.html' %}
 {% block body %}
 
+<script src="/static/js/image.js"></script>
 
 <div class="well spaced" style="background-color: {{ event.color }}">
+    {% if event.logo != None %}
+        <img id="img" src="{{ event.logo }}" alt="{{ event.logo }}" width="128" height="128"/>
+    {% endif %}
     <h2>{{ event.event_name }}</h2>
     <form action= "/event_profile/{{ event.event_id }}/live" method="POST">
         {% for question in event.questions %}
@@ -50,6 +54,9 @@
     </form>
 
 </div>
+
+
+<!-- make a jquery call to make the question with the values and then prevent the default to set a default for unanswered questions then in server.py I can say answers in answers -->
 </body>
 
 {% endblock %}
