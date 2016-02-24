@@ -6,7 +6,7 @@
   <h2> welcome {{ user.user_name }} </h2>
     <p> 
         {% for registration in user.registrations %} 
-            <a href="/event_profile/{{ registration.event.event_id }}/data/{{ user.user_id }}"/>
+            <a href="/event_profile/{{ registration.event.event_id }}/data/{{ registration.id }}"/>
                 {{ registration.event.event_name }}</a>
         {% endfor %}
     </p>

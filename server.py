@@ -222,7 +222,7 @@ def create_event():
     return render_template("create_event.html")
 
 
-@app.route('/create_reg', methods=['POST'])
+@app.route('/create_reg', methods=['POST', 'GET'])
 def create_registration_form():
     """create registration form"""
 
@@ -238,8 +238,31 @@ def create_registration_form():
     db.session.add(new_event)
     db.session.commit()
 
+    if logo is not None:
+        file_check = allowed_file(filename=logo)
+
+        if file_check is True:
+            upload = upload_file()
+
     return render_template("create_registration_form.html", new_event=new_event, 
             number_of_fields=number_of_fields)
+
+def allowed_file(filename):
+    """saving the logo"""
+
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+def upload_file():
+    if request.method == 'POST':
+        file = request.files['logo']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            # return redirect(url_for('uploaded_file',
+            #                         filename=filename))
+
+    
 
 
 @app.route("/registration_form_submit/<event_id>", methods=['POST'])
@@ -399,6 +422,9 @@ def individual_registration(event_id, registration_id):
     event = Event.query.get(event_id)
     registration = Registration.query.get(registration_id)
     logged_company_id = session.get("company_id")
+    print "******************************"
+    print event
+    print registration
 
     if event.company_id != logged_company_id:
         raise Exception("Company is not logged in.")

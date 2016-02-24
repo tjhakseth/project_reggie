@@ -6,9 +6,8 @@
 
 
 <h1>Create Event</h1>
-    <form action="/create_reg" method="POST">
+    <form action="/create_reg" method="POST" enctype="multipart/form-data">
         <label>Event name:<input name="event_name" type="text" /></label>
-        <label>How many pages<input name="number_of_pages" type="text"/></label>
         <label>Number of Fields:<input name="number_of_fields" type="text"/></label>
         <label>Select background color:<input type="color" name="color" value="#ff0000"></label>
         <label>Payment page?
