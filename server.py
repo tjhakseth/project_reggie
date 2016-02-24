@@ -328,36 +328,33 @@ def event_submit(event_id):
 
     flash("Successfully Registered for event")
 
-
+    # Charge if necessary
+    token = request.form.get('stripeToken', None)
+    # import pdb; pdb.set_trace()
+    if token is not None:
+        charged = charge_card(token, 20)
+        if not charged:
+            raise Exception("Payment error")
     
     return redirect("/user_profile/%s" % user_id)
 
     
+def charge_card(token, value):
+    stripe.api_key = "sk_test_GATVlXiqmnj4W65d3Bt1k82e"
 
-# @app.route("/event_profile/<event_id>/live", methods=['POST'])
-# def charge_card(event_id):
-
-#     stripe.api_key = "sk_test_GATVlXiqmnj4W65d3Bt1k82e"
-
-#     # # Get the credit card details submitted by the form
-#     token = request.form.get['stripeToken']
-#     print "*************************************"
-#     print token
-
-#     # # Create the charge on Stripe's servers - this will charge the user's card
-#     try:
-#       charge = stripe.Charge.create(
-#           amount=1000, # amount in cents, again
-#           currency="usd",
-#           source=token,
-#           description="Example charge"
-#       )
-        
-#     except stripe.error.CardError, e:
-#         pass
+    # # Create the charge on Stripe's servers - this will charge the user's card
+    worked = True
+    try:
+      charge = stripe.Charge.create(
+          amount=value * 100, # amount in cents, again
+          currency="usd",
+          source=token,
+          description="Example charge"
+      )        
+    except stripe.error.CardError, e:
+        worked = False
     
-#       # The card has been declined
-#     return render_template("test.html")
+    return worked
 
 
 @app.route("/event_profile/<event_id>/data", methods=['GET'])
@@ -372,20 +369,6 @@ def event_data(event_id):
 
     return render_template("event_data.html", event=event)
 
-# @app.route("/event_profile/<event_id>/data", methods=['GET'])
-# def upload_csv(event_id):
-
-
-#     filename = 'test.csv'
-#     with open(filename, 'rb') as f:
-#     reader = csv.reader(f)
-#     try:
-#         for row in reader:
-#             print row
-#     except csv.Error as e:
-#         sys.exit('file %s, line %d: %s' % (filename, reader.line_num, e))
-
-#     return render_template("test.html")
 
 @app.route("/event_profile/<event_id>/csvdata", methods=['GET'])
 def download_to_csv(event_id):
