@@ -5,7 +5,7 @@
 
 <div class="well spaced" style="background-color: {{ event.color }}">
     {% if event.logo != None %}
-        <img id="img" src="{{ event.logo }}" alt="{{ event.logo }}" width="128" height="128"/>
+        <img id="img" src="/static/{{ event.logo }}" alt="{{ event.logo }}" width="128" height="128"/>
     {% endif %}
     <h2>{{ event.event_name }}</h2>
     <form action= "/event_profile/{{ event.event_id }}/live" method="POST">
@@ -38,17 +38,19 @@
             </div>
         {% endfor %}
         {% if event.payment_page == True %}
-            <script
+            <form action= "/event_profile/{{ event.event_id }}/live" method="POST">
+             <script
                 src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                data-key="pk_test_6pRNASCoBOKtIshFeQd4XMUh"
+                data-key="pk_test_bREAtGbwzyYL8PEJODo2uZuI"
                 data-image="/img/documentation/checkout/marketplace.png"
-                data-name="Stripe.com"
+                data-name="Demo Site"
                 data-description="2 widgets"
                 data-amount="2000"
                 data-locale="auto">
             </script>
+            <input name="stripeToken" type="hidden"/> 
+        </form>
         {% endif %}
-
 
         <input type="submit" value="Submit Registration"/>
     </form>

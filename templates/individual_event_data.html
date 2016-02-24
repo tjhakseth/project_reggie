@@ -3,23 +3,23 @@
 
 
 <div class="well spaced">
-    <h2>Attendee: {{ user.user_name }}</h2>
+    <h2>Attendee: {{ registration.user.user_name }}</h2>
     </br>
-    <h2> Event: {{ event.event_name }}</h2>
+    <h2> Event: {{ registration.event.event_name }}</h2>
 
     <table>
         <tr>
-            {% for question in event.questions %}
+            {% for question in registration.event.questions %}
                 <th> {{ question.label }}</th>
             {% endfor %}
         </tr>
         <tr>
-            {% for answer in user.answers %}
+            {% for answer in registration.answers %}
                 <td> {{ answer.value }}<td>   
             {% endfor %}
-        </tr>     
+        </tr>    
     </table>
-    <form action="/event_profile/{{ event.event_id }}/data/{{ user.user_id}}" method='POST'>
+    <form action="/event_profile/{{ registration.event.event_id }}/data/{{ registration.id}}/delete" method='POST'>
         <input type='submit' value='DELETE REGISTRATION'>
     </form>
         

@@ -8,12 +8,22 @@ from csvkit import CSVKitWriter, CSVKitReader
 import sys
 import uuid
 from StringIO import StringIO
+import os
+from werkzeug import secure_filename
+from flask import send_from_directory
+from datetime import datetime
+
+import stripe
+stripe.api_key = "sk_test_GATVlXiqmnj4W65d3Bt1k82e"
 
 # add the classes after db once established
-from model import connect_to_db, db, Company, User, Event, Question, Answer
+from model import connect_to_db, db, Company, User, Event, Question, Answer, Registration
 
-
+UPLOAD_FOLDER = '/static/uploads'
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 #FlaskUUID(app)
 
 
@@ -196,19 +206,13 @@ def user_detail(user_id):
     """Show info about user."""
 
     user = User.query.get(user_id)
-    user_id = session.get("user_id")
+    logged_user_id = session.get("user_id")
 
-    if user.user_id != user_id:
+    if user.user_id != logged_user_id:
         raise Exception("User is not logged in.")
 
-    events = set()
 
-    for answer in user.answers:
-        events.add(answer.event)
-
-    #look at optimzing this
-
-    return render_template("user_profile.html", user=user, events=events)
+    return render_template("user_profile.html", user=user)
 
 
 @app.route('/create_event', methods=['GET'])
@@ -216,20 +220,6 @@ def create_event():
     """create event"""
 
     return render_template("create_event.html")
-
-
-@app.route("/event_profile/<event_id>")
-def event_profile(event_id):
-    """Show info about company."""
-
-    event = Event.query.get(event_id)
-    # company = event.company_id
-    # company_id = session.get("company_id")
-
-    # if company != company_id:
-    #     raise Exception("Company is not logged in.")
-
-    return render_template("event_profile.html", event=event)
 
 
 @app.route('/create_reg', methods=['POST'])
@@ -279,6 +269,20 @@ def registration_form_submit(event_id):
     return redirect("/event_profile/%s" % event_id)
 
 
+@app.route("/event_profile/<event_id>")
+def event_profile(event_id):
+    """Show info about company."""
+
+    event = Event.query.get(event_id)
+    # company = event.company_id
+    # company_id = session.get("company_id")
+
+    # if company != company_id:
+    #     raise Exception("Company is not logged in.")
+
+    return render_template("event_profile.html", event=event)
+
+
 @app.route("/event_profile/<event_id>/live", methods=['GET'])
 def event_profile_live(event_id):
 
@@ -292,49 +296,81 @@ def event_submit(event_id):
 
     event = Event.query.get(event_id)
     user_id = session.get("user_id")
-    questions = event.questions
-    values = request.form.getlist("question")
-    # try to make a dictionary, answers need to match up with questions, change the for loop to answer in answers from the loop
-    
-    question_ids = [q.id for q in questions]
 
     if not user_id:
         flash("Please log in to register for event")
         return redirect("/")
 
+    questions = event.questions
+    values = request.form.getlist("question")
+
+    
+    question_ids = [q.id for q in questions]
+
+
+    new_registration = Registration()
+    new_registration.user_id = user_id
+    new_registration.event_id= event_id
+    new_registration.timestamp= datetime.now()
+
+    db.session.add(new_registration)
+    
+
     for i in range (len(questions)):
         new_answer = Answer()
         new_answer.value = values[i]
         new_answer.question_id = question_ids[i]
-        new_answer.user_id = user_id
-        new_answer.event_id= event_id
+        new_answer.registration = new_registration
+
 
         db.session.add(new_answer)
-        db.session.commit()
+    db.session.commit()
 
     flash("Successfully Registered for event")
 
 
+    
     return redirect("/user_profile/%s" % user_id)
+
+    
+
+# @app.route("/event_profile/<event_id>/live", methods=['POST'])
+# def charge_card(event_id):
+
+#     stripe.api_key = "sk_test_GATVlXiqmnj4W65d3Bt1k82e"
+
+#     # # Get the credit card details submitted by the form
+#     token = request.form.get['stripeToken']
+#     print "*************************************"
+#     print token
+
+#     # # Create the charge on Stripe's servers - this will charge the user's card
+#     try:
+#       charge = stripe.Charge.create(
+#           amount=1000, # amount in cents, again
+#           currency="usd",
+#           source=token,
+#           description="Example charge"
+#       )
+        
+#     except stripe.error.CardError, e:
+#         pass
+    
+#       # The card has been declined
+#     return render_template("test.html")
 
 
 @app.route("/event_profile/<event_id>/data", methods=['GET'])
 def event_data(event_id):
 
     event = Event.query.get(event_id)
-    company_id = session.get("company_id")
+    logged_company_id = session.get("company_id")
 
-    # if company.company_id != company_id:
-    #     raise Exception("Company is not logged in.")
+    if event.company_id != logged_company_id:
+        raise Exception("Company is not logged in.")
 
-    answers = set()
 
-    for answer in event.answers:
-        answers.add(answer.event)
-
-    user_id = answer.user_id
-
-    return render_template("event_data.html", event=event, answers=answers, user_id=user_id)
+    return render_template("event_data.html", event=event)
 
 # @app.route("/event_profile/<event_id>/data", methods=['GET'])
 # def upload_csv(event_id):
@@ -354,56 +390,56 @@ def event_data(event_id):
 @app.route("/event_profile/<event_id>/csvdata", methods=['GET'])
 def download_to_csv(event_id):
 
+    f = StringIO()
+    writer = CSVKitWriter(f)
+
+    # List headers
     event = Event.query.get(event_id)
     headers = []
     for question in event.questions:
         headers.append(question.label)
-
-    data = []
-    for answer in event.answers:
-        data.append(answer.value)
-
-    f = StringIO()
-    writer = CSVKitWriter(f)
     writer.writerow(headers)
-    writer.writerow(data)
+    
+    # List entries for each registration
+    for registration in event.registrations:
+        data = []
+        for answer in registration.answers:
+            data.append(answer.value)
+        writer.writerow(data)
 
     return Response(f.getvalue(), mimetype='text/csv')
 
 
-@app.route("/event_profile/<event_id>/data/<user_id>", methods=['GET'])
-def individual_event_data(event_id, user_id):
+@app.route("/event_profile/<event_id>/data/<registration_id>", methods=['GET'])
+def individual_registration(event_id, registration_id):
 
     event = Event.query.get(event_id)
-    user = User.query.get(user_id)
-    company_id = session.get("company_id")
+    registration = Registration.query.get(registration_id)
+    logged_company_id = session.get("company_id")
 
-    if company.company_id != company_id:
+    if event.company_id != logged_company_id:
         raise Exception("Company is not logged in.")
-
-    answers = set()
-
-    for answer in event.answers:
-        answers.add(answer.event)
-
-    return render_template("individual_event_data.html", event=event, answers=answers, user=user)
+    if event.event_id != registration.event_id:
+        raise Exception("Event is wrongo")
 
 
-@app.route("/event_profile/<event_id>/data/<user_id>", methods=['POST'])
-def delete_record(event_id, user_id):
+    return render_template("individual_event_data.html", registration=registration)
 
-    user = User.query.get(user_id)
+
+@app.route("/event_profile/<event_id>/data/<registration_id>/delete", methods=['POST'])
+def delete_record(event_id, registration_id):
+
+    registration = Registration.query.get(registration_id)
     event = Event.query.get(event_id)
-    company_id = session.get("company_id")
+    logged_company_id = session.get("company_id")
 
-    if company.company_id != company_id:
+    if event.company_id != logged_company_id:
         raise Exception("Company is not logged in.")
+    if event.event_id != registration.event_id:
+        raise Exception("Event is wrongo")
 
-    answers_for_user_and_event = Answer.query.filter_by(user_id=user_id, event_id=event_id).all()
-
-    for answer in answers_for_user_and_event:
-        db.session.delete(answer)
-        db.session.commit()
+    db.session.delete(registration)
+    db.session.commit()
 
     return redirect("/event_profile/%s/data" % event_id)
 

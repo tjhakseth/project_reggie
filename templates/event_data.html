@@ -7,17 +7,27 @@
 
             <table>
                 <tr>
+                    <th> {{ "User ID" }}</th>
                     {% for question in event.questions %}
                         <th> {{ question.label }}</th>
                     {% endfor %}
-                        <th>Edit Record</th>
+                    <th>Edit Record</th>
                 </tr>
+
+                {% for registration in event.registrations %}
                 <tr>
-                    {% for answer in event.answers %}
-                        <td> {{ answer.value }}<td>   
+
+                    <td> {{ registration.user_id }}</td>
+                    {% for answer in registration.answers %}
+                    <td>{{ answer.value }}</td>
                     {% endfor %}
-                        <td> <a href="/event_profile/{{ event.event_id }}/data/{{ user_id }}">Edit Record</a> </td>
-                </tr>   
+                    <td> <a href="/event_profile/{{ event.event_id }}/data/{{ registration.id }}">Edit Record</a> </td>   
+                </tr>
+                {% endfor %}
+                
+
+                
+                  
             </table>
 
     <a href="/event_profile/{{ event.event_id }}/csvdata" name="downloadcsv">Download to CSV</a>

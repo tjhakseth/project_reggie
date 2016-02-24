@@ -78,15 +78,11 @@ class Answer(db.Model):
     __tablename__ = "answers"
 
     id =db.Column(UUID, server_default=text("uuid_generate_v4()"), primary_key=True)
-    user_id =db.Column(UUID, db.ForeignKey('users.user_id'))
-    event_id =db.Column(UUID, db.ForeignKey('events.event_id'))
-    question_id =db.Column(UUID, db.ForeignKey('questions.id'))
+    question_id =db.Column(UUID, db.ForeignKey('questions.id'), nullable=False)
+    registration_id =db.Column(UUID, db.ForeignKey('registrations.id'), nullable=False)
     value =db.Column(db.String(100))
 
-    user = db.relationship("User",
-                           backref=db.backref("answers"))
-
-    event = db.relationship("Event",
+    registration = db.relationship("Registration",
                            backref=db.backref("answers"))
 
     question = db.relationship("Question",
@@ -95,8 +91,30 @@ class Answer(db.Model):
     def __repr__(self):
         """Provides helpful representation when printed"""
 
-        return "<Answer id=%s, user_id=%s, question_id=%s, value=%s>" % (self.id, self.user_id, self.question_id, self.value)
+        return "<Answer id=%s, registration_id=%s, question_id=%s, value=%s>" % (self.id, self.registration_id, self.question_id, self.value)
 
+class Registration(db.Model):
+    """Registration to event"""
+
+    __tablename__ = "registrations"
+
+    id =db.Column(UUID, server_default=text("uuid_generate_v4()"), primary_key=True)
+    user_id =db.Column(UUID, db.ForeignKey('users.user_id'))
+    event_id =db.Column(UUID, db.ForeignKey('events.event_id'))
+    timestamp =db.Column(db.DateTime, nullable=False)
+
+
+    user = db.relationship("User",
+                           backref=db.backref("registrations"))
+
+    event = db.relationship("Event",
+                           backref=db.backref("registrations"))
+
+
+    def __repr__(self):
+        """Provides helpful representation when printed"""
+
+        return "<Registration id=%s, user_id=%s, event_id=%s, timestamp=%s>" % (self.id, self.user_id, self.event_id, self.timestamp)
 
 class User(db.Model):
     """User account in Reggie"""

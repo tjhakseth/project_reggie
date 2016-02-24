@@ -4,16 +4,20 @@
 
 <script src="/static/js/image.js"></script>
 
+
 <h1>Create Event</h1>
     <form action="/create_reg" method="POST">
         <label>Event name:<input name="event_name" type="text" /></label>
+        <label>How many pages<input name="number_of_pages" type="text"/></label>
         <label>Number of Fields:<input name="number_of_fields" type="text"/></label>
         <label>Select background color:<input type="color" name="color" value="#ff0000"></label>
-        <label>Would you like your logo:<input name="logo" type="file" id="file" accept"image/*"/></label>
         <label>Payment page?
             <input name="payment_page" type="checkbox" value="Yes"/>Yes
         </label>
+        <label>Price for Registration(no commas or $)<input name="prices" type="number"/></label>
+        <label>Would you like your logo:<input name="logo" type="file" id="file" accept"image/*"/></label>
         <input type='submit' value="Create Registration Form"/>
+   
     </form>
 
 
