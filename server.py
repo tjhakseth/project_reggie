@@ -19,7 +19,7 @@ stripe.api_key = "sk_test_GATVlXiqmnj4W65d3Bt1k82e"
 # add the classes after db once established
 from model import connect_to_db, db, Company, User, Event, Question, Answer, Registration
 
-UPLOAD_FOLDER = '/static/uploads'
+UPLOAD_FOLDER = 'static/uploads/'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -32,6 +32,12 @@ app.secret_key = "Reggieevents"
 # Normally, if you use an undefined variable in Jinja2, it fails silently.
 # This is horrible. Fix this so that, instead, it raises an error.
 app.jinja_env.undefined = StrictUndefined
+
+# def allowed_file(filename):
+#     """saving the logo"""
+
+#     return '.' in filename and \
+#            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 @app.route('/')
 def homepage():
@@ -222,7 +228,7 @@ def create_event():
     return render_template("create_event.html")
 
 
-@app.route('/create_reg', methods=['POST', 'GET'])
+@app.route('/create_reg', methods=['GET', 'POST'])
 def create_registration_form():
     """create registration form"""
 
@@ -230,7 +236,8 @@ def create_registration_form():
     event_name = request.form['event_name']
     number_of_fields = int(request.form['number_of_fields'])
     color = request.form['color']
-    logo = request.form['logo']
+    logo = request.files['logo']
+    logo = logo.filename
     payment_page = request.form.get('payment_page', False)
 
     new_event = Event(event_name=event_name, company_id=company_id, number_of_fields=number_of_fields, payment_page=payment_page, color=color, logo=logo)
@@ -238,11 +245,10 @@ def create_registration_form():
     db.session.add(new_event)
     db.session.commit()
 
+    # import pdb; pdb.set_trace()
     if logo is not None:
         file_check = allowed_file(filename=logo)
-
-        if file_check is True:
-            upload = upload_file()
+        upload = upload_file()
 
     return render_template("create_registration_form.html", new_event=new_event, 
             number_of_fields=number_of_fields)
@@ -259,11 +265,7 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            # return redirect(url_for('uploaded_file',
-            #                         filename=filename))
-
-    
-
+            
 
 @app.route("/registration_form_submit/<event_id>", methods=['POST'])
 def registration_form_submit(event_id):
@@ -311,7 +313,25 @@ def event_profile_live(event_id):
 
     event = Event.query.get(event_id)
 
+    print "********************"
+    print event.logo
+
+    if event.logo:
+        logo = uploaded_file(event.logo)
+
     return render_template("event_live.html", event=event)
+
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'],
+                               filename)
+
+@app.route("/event_list", methods=["GET"])
+def event_list():
+
+    events = Event.query.order_by('event_name').all()
+
+    return render_template("event_list.html", events=events)
+
 
 
 @app.route("/event_profile/<event_id>/live", methods=['POST'])
@@ -422,9 +442,6 @@ def individual_registration(event_id, registration_id):
     event = Event.query.get(event_id)
     registration = Registration.query.get(registration_id)
     logged_company_id = session.get("company_id")
-    print "******************************"
-    print event
-    print registration
 
     if event.company_id != logged_company_id:
         raise Exception("Company is not logged in.")
