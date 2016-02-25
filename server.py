@@ -232,22 +232,23 @@ def create_event():
 def create_registration_form():
     """create registration form"""
 
+
     company_id = session.get('company_id')
     event_name = request.form['event_name']
     number_of_fields = int(request.form['number_of_fields'])
     color = request.form['color']
-    logo = request.files['logo']
+    logo= request.files['logo']
     logo = logo.filename
     payment_page = request.form.get('payment_page', False)
+    price = request.form['price']
 
-    new_event = Event(event_name=event_name, company_id=company_id, number_of_fields=number_of_fields, payment_page=payment_page, color=color, logo=logo)
+    new_event = Event(event_name=event_name, company_id=company_id, number_of_fields=number_of_fields, payment_page=payment_page, price=price, color=color, logo=logo)
 
     db.session.add(new_event)
     db.session.commit()
 
-    # import pdb; pdb.set_trace()
-    if logo is not None:
-        file_check = allowed_file(filename=logo)
+    
+    if logo:
         upload = upload_file()
 
     return render_template("create_registration_form.html", new_event=new_event, 
@@ -257,7 +258,7 @@ def allowed_file(filename):
     """saving the logo"""
 
     return '.' in filename and \
-           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def upload_file():
     if request.method == 'POST':
@@ -308,13 +309,21 @@ def event_profile(event_id):
     return render_template("event_profile.html", event=event)
 
 
+@app.route("/event_list", methods=["GET"])
+def event_list():
+
+    events = Event.query.order_by('event_name').all()
+
+    return render_template("event_list.html", events=events)
+
+
 @app.route("/event_profile/<event_id>/live", methods=['GET'])
 def event_profile_live(event_id):
 
-    event = Event.query.get(event_id)
+    # import pdb; pdb.set_trace()
 
-    print "********************"
-    print event.logo
+
+    event = Event.query.get(event_id)
 
     if event.logo:
         logo = uploaded_file(event.logo)
@@ -324,14 +333,6 @@ def event_profile_live(event_id):
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'],
                                filename)
-
-@app.route("/event_list", methods=["GET"])
-def event_list():
-
-    events = Event.query.order_by('event_name').all()
-
-    return render_template("event_list.html", events=events)
-
 
 
 @app.route("/event_profile/<event_id>/live", methods=['POST'])
@@ -375,8 +376,9 @@ def event_submit(event_id):
     token = request.form.get('stripeToken', None)
     # import pdb; pdb.set_trace()
     if token is not None:
-        charged = charge_card(token, 20)
-        if not charged:
+        charged_id = charge_card(token, event.price)
+        # TODO: store the charge_id in the event
+        if not charged_id:
             raise Exception("Payment error")
     
     return redirect("/user_profile/%s" % user_id)
@@ -386,18 +388,19 @@ def charge_card(token, value):
     stripe.api_key = "sk_test_GATVlXiqmnj4W65d3Bt1k82e"
 
     # # Create the charge on Stripe's servers - this will charge the user's card
-    worked = True
+    result = None
     try:
       charge = stripe.Charge.create(
           amount=value * 100, # amount in cents, again
           currency="usd",
           source=token,
           description="Example charge"
-      )        
+      )
+      result = charge.id
     except stripe.error.CardError, e:
-        worked = False
+        pass
     
-    return worked
+    return result
 
 
 @app.route("/event_profile/<event_id>/data", methods=['GET'])
