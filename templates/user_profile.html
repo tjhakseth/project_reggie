@@ -4,12 +4,13 @@
 <br>
 <div class="well spaced" style="width:97%">
   <h2> welcome {{ user.user_name }} </h2>
-    <p> 
-        {% for registration in user.registrations %} 
+    <ul>Registered Events:</ul> 
+        {% for registration in user.registrations %}
+        <ul>
             <a href="/event_profile/{{ registration.event.event_id }}/data/{{ registration.id }}"/>
                 {{ registration.event.event_name }}</a>
+        </ul>
         {% endfor %}
-    </p>
 </div>
 
 {% endblock %}

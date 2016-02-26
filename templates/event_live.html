@@ -1,11 +1,13 @@
+
+<link href="/static/css/live_registration_form.css" rel="stylesheet">
+
 {% extends 'base.html' %}
 {% block body %}
 
-<script src="/static/js/image.js"></script>
-
+<div class="live">
 <div class="well spaced" style="background-color: {{ event.color }}">
     {% if event.logo != None %}
-        <img id="img" src="/static/uploads/{{ event.logo }}" alt="{{ event.logo }}" width="256" height="256"/>
+        <img id="img" src="/static/uploads/{{ event.logo }}" alt="{{ event.logo }}" width="128" height="128"/>
     {% endif %}
     <h2>{{ event.event_name }}</h2>
     <form action= "/event_profile/{{ event.event_id }}/live" method="POST">
@@ -50,10 +52,12 @@
             </script>
         </form>
         {% endif %}
-
-        <input type="submit" value="Submit Registration"/>
+        {% if event.payment_page == false %}
+            <input type="submit" value="Submit Registration"/>
+        {% endif %}
     </form>
 
+</div>
 </div>
 
 

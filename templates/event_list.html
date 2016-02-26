@@ -4,10 +4,12 @@
 <br>
 <div class="well spaced" style="width:97%">
   <h2> Live Events </h2>
-    <p> 
+
         {% for event in events %} 
+        <ul>    
             <a href="/event_profile/{{ event.event_id }}/live"/>
                 {{ event.event_name }}</a>
+        </ul>
         {% endfor %}
     </p>
 </div>

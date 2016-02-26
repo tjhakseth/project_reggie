@@ -4,10 +4,15 @@
 <div class="well spaced" style="width:97%">
   <h2> Welcome {{ company.contact_person }} at {{ company.company_name }}</h2>
 
-  <a href="/create_event">Create Event</a>
-    <p> 
-        {% for event in company.events %} 
+    <ul>
+        <a href="/create_event">Create Event</a>
+    </ul>
+    <ul>Events</ul>
+     
+        {% for event in company.events %}
+        <ul> 
             <a href="/event_profile/{{ event.event_id }}"/>{{ event.event_name }}</a>
+        </ul>
         {% endfor %}
     </p>
 

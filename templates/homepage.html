@@ -1,17 +1,47 @@
+
+<link href="/static/css/homepage.css" rel="stylesheet">
+
 {% extends 'base.html' %}
 
 {% block body %}
-<h1>Reggie</h1>
-    <h4>Registration, made easy.</h4>
-        <h5>Company logins</h5> 
-            <a href="http://localhost:5000/create_company">Create Company Account</a>
-            </br>
-            <a href="http://localhost:5000/company_login">Company Login</a>
-        <h5>User logins</h5> 
-            <a href="http://localhost:5000/create_user">Create User Account</a>
-        </br>
-            <a href="http://localhost:5000/user_login">User Login</a>
-        <img src="/static/img/IMG_4597.JPG" />
+<h1 class="reggie">Reggie</h1>
+    <h4 class="littlereg">Beautify Registration</h4>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-md-6 col-lg-6" id="company"> Company</div>
+            <div class="col-xs-12 col-md-6 col-lg-6" id="individual"> Individual</div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-md-6 col-lg-6" class"test">
+                <a href="/create_company">
+                    <input type="button" value="Create Company Account" class="button"/>
+                </a>
+            </div>
+            <div class="col-xs-12 col-md-6 col-lg-6">
+                <a href="/create_user">
+                    <input type="button" value="Create Individual Account" class="button"/>
+                </a>
+            </div>
+           
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-md-6 col-lg-6">
+                <a href="/company_login">
+                    <input type="button" value="Company Login" class="button"/>
+                </a>
+            </div>
+            <div class="col-xs-12 col-md-6 col-lg-6">
+                <a href="/user_login">
+                    <input type="button" value="Individual Login" class="button"/>
+                </a>
+            </div>
+           
+        </div>
+    </div>
 
 
 {% endblock %}

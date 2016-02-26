@@ -1,0 +1,19 @@
+.live {
+  padding: 0px;
+}
+
+input[type=text] {
+    width: 50%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+#img{
+    border-radius: 8px;
+    position: absolute;
+    right: 20px;
+    width: 40%;
+    height: 40%;
+
+
+}

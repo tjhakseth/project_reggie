@@ -1,14 +1,17 @@
+
+<link href="/static/css/create_registration_form.css" rel="stylesheet">
+
 {% extends 'base.html' %}
 
 {% block body %}
-
-<h1>Create Registration for {{ new_event.event_name }}</h1>
-    <form action="/registration_form_submit/{{ new_event.event_id }}" method="POST">
+<div class="regform">
+<h1>{{ new_event.event_name }} Registration Form</h1>
+    <form action="/registration_form_submit/{{ new_event.event_id }}" method="POST" class="form-inline">
        
         {% for number in range(number_of_fields) %}       
             <div class='questions'>
-                <label class="field">Field:
-                    <input name="label" type="text"/>
+                <label class="field">Field
+                    <input name="label" type="text" class="form-control"/>
                     <select name="selector" class="type" id="type_{{ number }}">
                         <option id="textbox">Text</option>
                         <option id="dropdown">Dropdown</option>
@@ -20,8 +23,9 @@
             </div>
 
         {% endfor %}
-        <input type='submit' value="Save Form"/>
+         <button type="submit" class="btn btn-default">Save Registration Form</button>
     </form>
+</div>
 
     <script type="text/javascript">
     "use strict";

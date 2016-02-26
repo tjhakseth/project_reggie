@@ -1,23 +1,56 @@
+
+<link href="/static/css/create_event.css" rel="stylesheet">
+
 {% extends 'base.html' %}
 
 {% block body %}
-
-<!-- <script src="/static/js/image.js"></script> -->
-
-
+<div class="ceform">
 <h1>Create Event</h1>
     <form action="/create_reg" method="POST" enctype="multipart/form-data">
-        <label>Event name:<input name="event_name" type="text" /></label>
-        <label>Number of Fields:<input name="number_of_fields" type="text"/></label>
-        <label>Select background color:<input type="color" name="color" value="#ff0000"></label>
-        <label>Payment page?
-            <input name="payment_page" type="checkbox" value="Yes"/>Yes
-        </label>
-        <label>Price for Registration(no commas or $)<input name="price" type="number"/></label>
-        <label>Would you like your logo:<input name="logo" type="file" id="file" accept"image/*"/></label>
-        <input type='submit' value="Create Registration Form"/>
+        <div class="form-group">
+            <label for="eventname">Event name</label>
+            <input type="text" name="event_name" class="form-control" placeholder="Event Name">
+        </div>
+        <div class="form-group">
+            <label for="numberoffields">Number of Fields</label>
+            <input type="text" name="number_of_fields" class="form-control" placeholder="Number of Fields">
+        </div>
+        <div class="form-group">
+            <label for="selectbackgroundcolor">Select background color</label>
+            <input type="color" name="color" class="form-control" value="#ff0000">
+        </div>
+        <div class="form-group">
+            <label for="paymentpage">Payment Page</label></br>
+            <input type="checkbox" name="payment_page" value="Yes"/>Yes
+        </div>
+        <div class="form-group">
+            <label for="price">Price for Registration</label>
+            <input type="number" class="form-control" name="price">
+        </div>
+        <div class="form-group">
+            <label for="logo">Logo</label>
+            <input type="file" name="logo" class="form-control" id="file" accept"image/*">
+        </div>
+        <button type="submit" class="btn btn-default">Create Registration Form</button>
    
     </form>
+</div>
+
+
+<!-- <form>
+ 
+  <div class="form-group">
+    <label for="exampleInputFile">File input</label>
+    <input type="file" id="exampleInputFile">
+    <p class="help-block">Example block-level help text here.</p>
+  </div>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox"> Check me out
+    </label>
+  </div>
+  
+</form> -->
 
 
 {% endblock %}

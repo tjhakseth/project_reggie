@@ -7,7 +7,7 @@
     </br>
     <h2> Event: {{ registration.event.event_name }}</h2>
 
-    <table>
+    <table class="table table-striped">
         <tr>
             {% for question in registration.event.questions %}
                 <th> {{ question.label }}</th>
@@ -15,7 +15,7 @@
         </tr>
         <tr>
             {% for answer in registration.answers %}
-                <td> {{ answer.value }}<td>   
+                <td> {{ answer.value }}</td>   
             {% endfor %}
         </tr>    
     </table>

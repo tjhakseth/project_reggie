@@ -1,0 +1,61 @@
+body {
+  padding-top: 0px;
+  background-image: url("/static/img/wood.jpg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+
+}
+
+.reggie {
+  padding: 40px 15px 10px 15px;
+  text-align: center;
+  font-family: "Georgia", "Serif";
+  font-style: oblique;
+  font-size: 150px;
+  color:  #e0ebeb;
+
+}
+.littlereg {
+  padding: 10px 10px 10px 10px;
+  text-align: center;
+  font-family: "Georgia", "Serif";
+  font-style: oblique;
+  font-size: 40px;
+  color:  #e0ebeb;
+
+}
+#company {
+  padding: 25px 25px 25px 25px;
+  text-align: center;
+  font-family: "Georgia", "Serif";
+  font-style: oblique;
+  font-size: 30px;
+  color:  #e0ebeb;
+
+}
+#individual {
+  padding: 25px 25px 25px 25px;
+  text-align: center;
+  font-family: "Georgia", "Serif";
+  font-style: oblique;
+  font-size: 30px;
+  color:  #e0ebeb;
+
+}
+
+.button {
+  margin: auto;
+  width: 100%;
+  background-color: #e7e7e7;
+  color: black;
+  border: none;
+  border-radius: 12px;;
+  padding: 15px 15px 15px 15px;
+  text-align: center;
+  font-family: "Georgia", "Serif";
+  font-style: oblique;
+  font-size: 15px;
+  color:  #9f6060;
+  text-decoration: none;
+  display: inline-block;
+}
