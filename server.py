@@ -1,23 +1,23 @@
-from jinja2 import StrictUndefined
-from flask import Flask, Response, render_template, request, flash, redirect, session, jsonify, url_for
-from flask.ext.uuid import FlaskUUID
-from flask_debugtoolbar import DebugToolbarExtension
-import bcrypt
+# stdlib
+from datetime import datetime
 import json
-from csvkit import CSVKitWriter, CSVKitReader
 import sys
 import uuid
 from StringIO import StringIO
 import os
-from werkzeug import secure_filename
-from flask import send_from_directory
-from datetime import datetime
-
+# third party
+import bcrypt
+from csvkit import CSVKitWriter, CSVKitReader
+from flask import Flask, Response, render_template, request, flash, redirect, session, jsonify, url_for, send_from_directory
+from flask_debugtoolbar import DebugToolbarExtension
+from flask.ext.uuid import FlaskUUID
+from jinja2 import StrictUndefined
 import stripe
-stripe.api_key = "sk_test_GATVlXiqmnj4W65d3Bt1k82e"
-
-# add the classes after db once established
+from werkzeug import secure_filename
+# local
 from model import connect_to_db, db, Company, User, Event, Question, Answer, Registration
+
+stripe.api_key = "sk_test_GATVlXiqmnj4W65d3Bt1k82e"
 
 UPLOAD_FOLDER = 'static/uploads/'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])

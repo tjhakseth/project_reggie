@@ -3,14 +3,20 @@
 {% block body %}
 
 <div class="well spaced" style="width:40%;">
-<h1>Create User Account</h1>
+<h1>Create Individual Account</h1>
 
 <form action="/create_user" method="POST">
 
     <div class="form-group">
         <label>
-            Name
-            <input type="text" name="username" class="form-control">
+            First Name
+            <input type="text" name="firstname" class="form-control">
+        </label>
+    </div>
+    <div class="form-group">
+        <label>
+            Last Name
+            <input type="text" name="lastname" class="form-control">
         </label>
     </div>
 
@@ -31,6 +37,18 @@
     <div class="form-group">
         <label>
             Address
+            <input type="text" name="useraddress" class="form-control">
+        </label>
+    </div>
+    <div class="form-group">
+        <label>
+            State
+            <input type="text" name="useraddress" class="form-control">
+        </label>
+    </div>
+    <div class="form-group">
+        <label>
+            Zip
             <input type="text" name="useraddress" class="form-control">
         </label>
     </div>
