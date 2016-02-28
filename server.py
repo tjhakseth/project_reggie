@@ -232,6 +232,7 @@ def create_registration_form():
     event_name=request.form['event_name']
     venue=request.form['venue']
     address=request.form['address']
+    city=request.form['city']
     state=request.form['state']
     zipcode=request.form['zipcode']
     date=request.form['date']

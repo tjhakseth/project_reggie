@@ -3,7 +3,7 @@
 
 
 <div class="well spaced">
-    <h2>Attendee: {{ registration.user.user_name }}</h2>
+    <h2>Attendee: {{ registration.user.user_firstname }}</h2>
     </br>
     <h2> Event: {{ registration.event.event_name }}</h2>
 
@@ -12,11 +12,15 @@
             {% for question in registration.event.questions %}
                 <th> {{ question.label }}</th>
             {% endfor %}
+                <th>Payment</th>
+                <th>Edit</th>
         </tr>
         <tr>
             {% for answer in registration.answers %}
                 <td> {{ answer.value }}</td>   
             {% endfor %}
+                <td> {{ registration.event.price }}</td>
+                <td>Edit</td>
         </tr>    
     </table>
     <form action="/event_profile/{{ registration.event.event_id }}/data/{{ registration.id}}/delete" method='POST'>

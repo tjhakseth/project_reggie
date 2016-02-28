@@ -1,4 +1,9 @@
 
+<script src="https://maps.googleapis.com/maps/api/js"></script>
+<script src="https://code.jquery.com/jquery.js"></script>
+
+<link href="/static/css/landing_page.css" rel="stylesheet">
+
 {% extends 'base.html' %}
 {% block body %}
 <div class="well spaced" style="background-color: {{ event.color }}">
@@ -8,6 +13,9 @@
     <h2>{{ event.event_name }}</h2>
     <p>{{ event.venue }} {{ event.date }}</p>
     <p>{{ event.description }}</p>
+    <div id="map">
+        <img src="https://maps.googleapis.com/maps/api/staticmap?center={{event.zipcode}}&zoom=14&size=400x400&markers=color:red%7Clabel:A%7C450masonstreet,{{event.state}}&key=AIzaSyAK8OzEqj6R1Ln2oRPzUN6BsgekqdhtxFY">
+    </div>
 
     <a href="/event_profile/{{ event.event_id }}/live" class="btn btn-info" role="button">Register Now</a>
 
