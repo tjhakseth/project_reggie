@@ -24,20 +24,11 @@ ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-#FlaskUUID(app)
-
-
-# Required to use Flask sessions and the debug toolbar
 app.secret_key = "Reggieevents"
-# Normally, if you use an undefined variable in Jinja2, it fails silently.
-# This is horrible. Fix this so that, instead, it raises an error.
+
 app.jinja_env.undefined = StrictUndefined
 
-# def allowed_file(filename):
-#     """saving the logo"""
 
-#     return '.' in filename and \
-#            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 @app.route('/')
 def homepage():
@@ -63,6 +54,8 @@ def process_create_company():
     contact_person = request.form["contactperson"]
     company_phone = request.form["companyphone"]
     company_address = request.form["companyaddress"]
+    company_state = request.form["companystate"]
+    company_zip = request.form["companyzip"]
     password = request.form["password"]
     password_bytes = password.encode('utf-8')
 
@@ -73,6 +66,8 @@ def process_create_company():
                             contact_person=contact_person,
                             company_phone=company_phone,
                             company_address=company_address,
+                            company_state=company_state,
+                            company_zip=company_zip,
                             password=hashed)
 
     db.session.add(new_company)
@@ -146,19 +141,19 @@ def process_create_user():
     """Process a newly created user"""
 
     # Get form variables
-    user_name = request.form["username"]
+    user_firstname = request.form["user_firstname"]
+    user_lastname = request.form["user_lastname"]
     user_email = request.form["useremail"]
     user_phone = request.form["userphone"]
-    user_address = request.form["useraddress"]
     password = request.form["password"]
     password_bytes = password.encode('utf-8')
 
     hashed = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
 
-    new_user = User(user_name=user_name,
+    new_user = User(user_firstname=user_firstname,
+                    user_lastname=user_lastname,
                     user_email=user_email,
                     user_phone=user_phone,
-                    user_address=user_address,
                     password=hashed)
 
     db.session.add(new_user)
@@ -233,16 +228,32 @@ def create_registration_form():
     """create registration form"""
 
 
-    company_id = session.get('company_id')
-    event_name = request.form['event_name']
+    company_id=session.get('company_id')
+    event_name=request.form['event_name']
+    venue=request.form['venue']
+    address=request.form['address']
+    state=request.form['state']
+    zipcode=request.form['zipcode']
+    date=request.form['date']
+    description=request.form['description']
     number_of_fields = int(request.form['number_of_fields'])
     color = request.form['color']
     logo= request.files['logo']
     logo = logo.filename
-    payment_page = request.form.get('payment_page', False)
     price = request.form['price']
 
-    new_event = Event(event_name=event_name, company_id=company_id, number_of_fields=number_of_fields, payment_page=payment_page, price=price, color=color, logo=logo)
+    new_event = Event(event_name=event_name,
+                    company_id=company_id,
+                    venue=venue,
+                    address=address,
+                    state=state,
+                    zipcode=zipcode,
+                    date=date,
+                    description=description, 
+                    number_of_fields=number_of_fields, 
+                    price=price, 
+                    color=color, 
+                    logo=logo)
 
     db.session.add(new_event)
     db.session.commit()
@@ -317,11 +328,24 @@ def event_list():
     return render_template("event_list.html", events=events)
 
 
+@app.route("/event_profile/<event_id>/home", methods=['GET'])
+def event_landing_page(event_id):
+
+    event = Event.query.get(event_id)
+
+    if event.logo:
+        logo = uploaded_file(event.logo)
+
+    return render_template("landing_page.html", event=event)
+
+def uploaded_file(filename):
+    # import pdb; pdb.set_trace()
+    return send_from_directory(app.config['UPLOAD_FOLDER'],
+                               filename)
+
+
 @app.route("/event_profile/<event_id>/live", methods=['GET'])
 def event_profile_live(event_id):
-
-    # import pdb; pdb.set_trace()
-
 
     event = Event.query.get(event_id)
 
@@ -331,6 +355,7 @@ def event_profile_live(event_id):
     return render_template("event_live.html", event=event)
 
 def uploaded_file(filename):
+    # import pdb; pdb.set_trace()
     return send_from_directory(app.config['UPLOAD_FOLDER'],
                                filename)
 

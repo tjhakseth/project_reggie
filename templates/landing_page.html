@@ -1,0 +1,14 @@
+
+{% extends 'base.html' %}
+{% block body %}
+<div class="well spaced" style="background-color: {{ event.color }}">
+    {% if event.logo != None %}
+        <img id="img" src="/static/uploads/{{ event.logo }}" alt="{{ event.logo }}" width="128" height="128"/>
+    {% endif %}
+    <h2>{{ event.event_name }}</h2>
+    <p>{{ event.venue }} {{ event.date }}</p>
+    <p>{{ event.description }}</p>
+
+    <a href="/event_profile/{{ event.event_id }}/live" class="btn btn-info" role="button">Register Now</a>
+
+{% endblock %}

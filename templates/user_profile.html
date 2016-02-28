@@ -3,7 +3,7 @@
 {% block body %}
 <br>
 <div class="well spaced" style="width:97%">
-  <h2> welcome {{ user.user_name }} </h2>
+  <h2> welcome {{ user.user_firstname }} </h2>
     <ul>Registered Events:</ul> 
         {% for registration in user.registrations %}
         <ul>

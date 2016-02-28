@@ -1,6 +1,25 @@
 
 <link href="/static/css/live_registration_form.css" rel="stylesheet">
 
+<script src="https://code.jquery.com/jquery.js"></script>
+<script>
+    
+    $(document).ready(function() {
+        $('#payment').hide();
+        $('#next').click(function() {
+            $('#payment').show();
+            $('#form').hide();
+            $('#next').hide();
+        });
+        $('#previous').click(function() {
+            $('#payment').hide();
+            $('#form').show();
+            $('#next').show();
+        });
+    });
+
+</script>
+
 {% extends 'base.html' %}
 {% block body %}
 
@@ -10,6 +29,7 @@
         <img id="img" src="/static/uploads/{{ event.logo }}" alt="{{ event.logo }}" width="128" height="128"/>
     {% endif %}
     <h2>{{ event.event_name }}</h2>
+    <div id="form">
     <form action= "/event_profile/{{ event.event_id }}/live" method="POST">
         {% for question in event.questions %}
             <div>
@@ -39,7 +59,24 @@
                 {% endif %}
             </div>
         {% endfor %}
-        {% if event.payment_page == True %}
+    </div>
+
+        {% if event.price == 0 %}
+            <input type="submit" value="Submit Registration"/>
+        {% endif %}
+
+        <div id="payment">
+        {% if event.price > 0 %}
+            <table class="table table-striped">
+                <tr>
+                    <th>Item</th>
+                    <th>Price</th>
+                </tr>
+                <tr>
+                    <td> {{ event.event_name }}</td>
+                    <td> {{ event.price }}   
+                </tr>    
+            </table>
             <form action= "/event_profile/{{ event.event_id }}/live" method="POST">
              <script
                 src="https://checkout.stripe.com/checkout.js" class="stripe-button"
@@ -52,16 +89,18 @@
             </script>
         </form>
         {% endif %}
-        {% if event.payment_page == false %}
-            <input type="submit" value="Submit Registration"/>
-        {% endif %}
+
+    </div>
     </form>
-
+    <nav>
+        <ul class="pager">
+            <li><a href="/event_profile/{{ event.event_id }}/home">Event Home</a></li>
+            <li><button type="button" id="previous">Previous</button></li>
+            <li><button type="button" id="next">Next</button></li>
+        </ul>
+    </nav>
 </div>
 </div>
 
-
-<!-- make a jquery call to make the question with the values and then prevent the default to set a default for unanswered questions then in server.py I can say answers in answers -->
-</body>
 
 {% endblock %}

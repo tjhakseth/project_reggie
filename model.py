@@ -22,6 +22,8 @@ class Company(db.Model):
     contact_person = db.Column(db.String(50))
     company_phone = db.Column(db.String(30))
     company_address = db.Column(db.String(200))
+    company_state = db.Column(db.String(200))
+    company_zip = db.Column(db.String(200))
     password = db.Column(db.String(100))
     
     def __repr__(self):
@@ -37,12 +39,16 @@ class Event(db.Model):
     event_id = db.Column(UUID, server_default=text("uuid_generate_v4()"), primary_key=True)
     company_id = db.Column(UUID, db.ForeignKey('companies.company_id'))
     event_name = db.Column(db.String(100), nullable=False)
+    venue = db.Column(db.String(100))
+    address = db.Column(db.String(100))
+    state  = db.Column(db.String(100))
+    zipcode  = db.Column(db.String(100))
+    date = db.Column(db.DateTime)
+    description = db.Column(db.String(1000))
     number_of_fields = db.Column(db.Integer, nullable=False)
-    payment_page =db.Column(db.Boolean, nullable=True)
     price =db.Column(db.Integer, nullable=True)
     color =db.Column(db.String(100))
     logo =db.Column(db.String(100))
-    location = db.Column(db.String(100))
     status = db.Column(db.String(30))
 
     company = db.relationship("Company",
@@ -123,10 +129,10 @@ class User(db.Model):
     __tablename__ = "users"
 
     user_id = db.Column(UUID, server_default=text("uuid_generate_v4()"), primary_key=True)
-    user_name = db.Column(db.String(100), nullable=False)
+    user_firstname = db.Column(db.String(100), nullable=False)
+    user_lastname = db.Column(db.String(100), nullable=False)
     user_email = db.Column(db.String(100), nullable=False)
     user_phone = db.Column(db.String(30))
-    user_address = db.Column(db.String(200))
     password = db.Column(db.String(100))
 
     def __repr__(self):
@@ -134,30 +140,6 @@ class User(db.Model):
 
         return "<User user_id=%s, user_name=%s, user_email%s>" % (self.user_id, self.user_name, self.user_email)
 
-
-
-
-# class UserEvent(db.Model):
-#     """User events in Reggie"""
-
-#     __tablename__ = "user_events"
-
-#     user_event_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-#     event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'))
-#     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-
-#     event = db.relationship("Event",
-#                            backref=db.backref("user_events", order_by=user_event_id))
-
-#     user = db.relationship("User",
-#                            backref=db.backref("user_events", order_by=user_event_id))
-
-
-
-#     def __repr__(self):
-#         """Provides helpful representation when printed"""
-
-#         return "<User_event user_event_id=%s>" % (self.user_event_id)
 
 
 ##############################################################################

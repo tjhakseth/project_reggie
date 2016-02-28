@@ -12,20 +12,40 @@
             <input type="text" name="event_name" class="form-control" placeholder="Event Name">
         </div>
         <div class="form-group">
+            <label for="venue">Venue</label>
+            <input type="text" name="venue" class="form-control" placeholder="Venue">
+        </div>
+        <div class="form-group">
+            <label for="address">Address</label>
+            <input type="text" name="address" class="form-control" placeholder="Address">
+        </div>
+        <div class="form-group">
+            <label for="state">State</label>
+            <input type="text" name="state" class="form-control" placeholder="State">
+        </div>
+        <div class="form-group">
+            <label for="zipcode">Zipcode</label>
+            <input type="text" name="zipcode" class="form-control" placeholder="Zipcode">
+        </div>
+        <div class="form-group">
+            <label for="datetime">Date and Time</label>
+            <input type="text" name="date" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <input type="textarea" name="description" class="form-control" placeholder="Description">
+        </div>
+        <div class="form-group">
             <label for="numberoffields">Number of Fields</label>
             <input type="text" name="number_of_fields" class="form-control" placeholder="Number of Fields">
         </div>
         <div class="form-group">
-            <label for="selectbackgroundcolor">Select background color</label>
-            <input type="color" name="color" class="form-control" value="#ff0000">
-        </div>
-        <div class="form-group">
-            <label for="paymentpage">Payment Page</label></br>
-            <input type="checkbox" name="payment_page" value="Yes"/>Yes
-        </div>
-        <div class="form-group">
             <label for="price">Price for Registration</label>
             <input type="number" class="form-control" name="price">
+        </div>
+        <div class="form-group">
+            <label for="selectbackgroundcolor">Select background color</label>
+            <input type="color" name="color" class="form-control" value="#ff0000">
         </div>
         <div class="form-group">
             <label for="logo">Logo</label>
@@ -35,22 +55,6 @@
    
     </form>
 </div>
-
-
-<!-- <form>
- 
-  <div class="form-group">
-    <label for="exampleInputFile">File input</label>
-    <input type="file" id="exampleInputFile">
-    <p class="help-block">Example block-level help text here.</p>
-  </div>
-  <div class="checkbox">
-    <label>
-      <input type="checkbox"> Check me out
-    </label>
-  </div>
-  
-</form> -->
 
 
 {% endblock %}
