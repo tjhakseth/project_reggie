@@ -29,10 +29,10 @@ app.secret_key = "Reggieevents"
 app.jinja_env.undefined = StrictUndefined
 
 
-
 @app.route('/')
 def homepage():
     """Homepage."""
+
 
     return render_template("homepage.html")
 
@@ -40,6 +40,7 @@ def homepage():
 @app.route('/create_company', methods=['GET'])
 def create_company():
     """Show form for company to signup."""
+
 
     return render_template("create_company_form.html")
 
@@ -60,6 +61,7 @@ def process_create_company():
     password = request.form["password"]
     password_bytes = password.encode('utf-8')
 
+    # Hashing password
     hashed = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
 
     new_company = Company(company_name=company_name,
@@ -72,19 +74,23 @@ def process_create_company():
                             company_zip=company_zip,
                             password=hashed)
 
+    # Adding the new company to the database
     db.session.add(new_company)
     db.session.commit()
 
+    # Saving the session
     session["company_id"] = new_company.company_id
 
     flash("Company %s added." % company_name)
     flash("Logged in")
+
     return redirect("/company_profile/%s" % new_company.company_id)
 
 
 @app.route('/company_login', methods=['GET'])
 def company_login():
     """Company login page"""
+
 
     return render_template("company_login_form.html")
 
@@ -100,21 +106,25 @@ def company_login_process():
 
     hashed = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
 
+    # Query for the company email
     company = Company.query.filter_by(company_email=company_email).first()
 
     if not company:
         flash("Incorrect login credentials")
         return redirect("/company_login")
 
+    # Verifying the password
     if bcrypt.hashpw(password_bytes, hashed) == hashed:
         flash("Welcome")
     else:
         flash("Incorrect login credentials")
         return redirect("/company_login")
 
+    # Saving the session
     session["company_id"] = company.company_id
 
     flash("Logged in")
+
     return redirect("/company_profile/%s" % company.company_id)
 
 
@@ -125,6 +135,7 @@ def company_profile(company_id):
     company = Company.query.get(company_id)
     company_id = session.get("company_id")
 
+    # Verifying the company is logged in
     if company.company_id != company_id:
         raise Exception("Company is not logged in.")
 
@@ -134,6 +145,7 @@ def company_profile(company_id):
 @app.route('/create_user', methods=['GET'])
 def create_user():
     """Show form for users to signup."""
+
 
     return render_template("create_user_form.html")
 
@@ -150,6 +162,7 @@ def process_create_user():
     password = request.form["password"]
     password_bytes = password.encode('utf-8')
 
+    # Hashing the password
     hashed = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
 
     new_user = User(user_firstname=user_firstname,
@@ -158,19 +171,23 @@ def process_create_user():
                     user_phone=user_phone,
                     password=hashed)
 
+    # Adding the new user to the database
     db.session.add(new_user)
     db.session.commit()
 
+    # Saving the session
     session["user_id"] = new_user.user_id
 
     flash("User %s added." % user_email)
     flash("Logged in")
+
     return redirect("/user_profile/%s" % new_user.user_id)
 
 
 @app.route('/user_login', methods=['GET'])
 def user_login():
     """user login page"""
+
 
     return render_template("user_login_form.html")
 
@@ -184,23 +201,28 @@ def user_login_process():
     password = request.form["password"]
     password_bytes = password.encode('utf-8')
 
+    # Hashing the password
     hashed = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
 
+    # Looking up the user in the database 
     user = User.query.filter_by(user_email=user_email).first()
 
     if not user:
         flash("Incorrect login credentials")
         return redirect("/user_login")
 
+    # Verifying the password
     if bcrypt.hashpw(password_bytes, hashed) == hashed:
         flash("Welcome")
     else:
         flash("Incorrect login credentials")
         return redirect("/user_login")
 
+    # Saving the session
     session["user_id"] = user.user_id
 
     flash("Logged in")
+
     return redirect("/user_profile/%s" % user.user_id)
 
 
@@ -211,9 +233,9 @@ def user_detail(user_id):
     user = User.query.get(user_id)
     logged_user_id = session.get("user_id")
 
+    # Verifying the user
     if user.user_id != logged_user_id:
         raise Exception("User is not logged in.")
-
 
     return render_template("user_profile.html", user=user)
 
@@ -227,9 +249,9 @@ def create_event():
 
 @app.route('/create_reg', methods=['GET', 'POST'])
 def create_registration_form():
-    """create registration form"""
+    """create event for registration form and landing page"""
 
-
+    # Get form variables
     company_id=session.get('company_id')
     event_name=request.form['event_name']
     venue=request.form['venue']
@@ -259,10 +281,11 @@ def create_registration_form():
                     color=color, 
                     logo=logo)
 
+    # Adding new event to the database
     db.session.add(new_event)
     db.session.commit()
 
-    
+    # If there is a logo, calls the upload file function
     if logo:
         upload = upload_file()
 
@@ -270,12 +293,14 @@ def create_registration_form():
             number_of_fields=number_of_fields)
 
 def allowed_file(filename):
-    """saving the logo"""
+    """formatting the filename"""
 
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def upload_file():
+    """saving the logo to folder static/uploads"""
+
     if request.method == 'POST':
         file = request.files['logo']
         if file and allowed_file(file.filename):
@@ -285,11 +310,14 @@ def upload_file():
 
 @app.route("/registration_form_submit/<event_id>", methods=['POST'])
 def registration_form_submit(event_id):
+    """User builds structure of the registration form"""
 
+    # Get form variables
     labels = request.form.getlist('label')
     selectors = request.form.getlist('selector')
     data = request.form.getlist('options')
 
+    # For each label creates a new question
     for i in range (len(labels)):
         new_question = Question()
         new_question.label=labels[i]
@@ -297,11 +325,13 @@ def registration_form_submit(event_id):
         new_question.ordinal = i
         new_question.event_id = event_id
         field_options = data[i]
+        #Json for the options for the selectors
         if field_options:
             new_question.data = json.loads(data[i])
         else:
             new_question.data = None
 
+        # Adds each question to the database
         db.session.add(new_question)
         db.session.commit()
 
@@ -312,27 +342,33 @@ def registration_form_submit(event_id):
 
 @app.route("/event_profile/<event_id>")
 def event_profile(event_id):
-    """Show info about company."""
+    """Event Dashboard for companies"""
 
+    # Gets the specific event
     event = Event.query.get(event_id)
-    # company = event.company_id
-    # company_id = session.get("company_id")
 
-    # if company != company_id:
-    #     raise Exception("Company is not logged in.")
+    # Verify the company login
+    company = event.company_id
+    company_id = session.get("company_id")
+
+    if company != company_id:
+        raise Exception("Company is not logged in.")
 
     return render_template("event_profile.html", event=event)
 
+
 @app.route("/event_profile/<event_id>/chart_data.json")
 def get_data(event_id):
+    """Dashbord charts for the event"""
 
+    # Gets the specific event
     event = Event.query.get(event_id)
 
+    # Empty Dictionary for the Json file
     chart_data = {}
 
+    # Creates the x axis for the chart(date)
     chart_data['labels'] = []
-
-
     for reg in event.registrations:
         # day =reg.timestamp.day
         # month =reg.timestamp.month
@@ -345,12 +381,13 @@ def get_data(event_id):
 
         # data.append(len(event.registrations))
 
+    # Creates the data points 
     number = list(enumerate(event.registrations, start=1)) 
     data = []
     for i in number:
         data.append(i[0])
-    
 
+    # Creats the y axis for the chart and color scheme
     chart_data['datasets'] = [
             {
                 "label": "Registrations",
@@ -364,14 +401,14 @@ def get_data(event_id):
             },
         ]
 
-
-
-
     return jsonify(chart_data)
+
 
 @app.route("/event_list", methods=["GET"])
 def event_list():
+    """List of all live events"""
 
+    # Gets the events from the database
     events = Event.query.order_by('event_name').all()
 
     return render_template("event_list.html", events=events)
@@ -379,54 +416,64 @@ def event_list():
 
 @app.route("/event_profile/<event_id>/home", methods=['GET'])
 def event_landing_page(event_id):
+    """Landing page for an event"""
 
+    # Gets the specific event information
     event = Event.query.get(event_id)
 
+    # Checks for a logo and calls upload_file if there is a logo
     if event.logo:
         logo = uploaded_file(event.logo)
 
     return render_template("landing_page.html", event=event)
 
+
 def uploaded_file(filename):
-    # import pdb; pdb.set_trace()
-    return send_from_directory(app.config['UPLOAD_FOLDER'],
-                               filename)
+    """Uploads the logo on the landing page"""
+
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
 @app.route("/event_profile/<event_id>/live", methods=['GET'])
 def event_profile_live(event_id):
+    """Registration form for an event"""
 
+    # Gets the specific event information
     event = Event.query.get(event_id)
 
+    # Checks for a logo and calls upload_file if there is a logo
     if event.logo:
         logo = uploaded_file(event.logo)
 
     return render_template("event_live.html", event=event)
 
 def uploaded_file(filename):
-    # import pdb; pdb.set_trace()
-    return send_from_directory(app.config['UPLOAD_FOLDER'],
-                               filename)
+    """Uploads the logo on the landing page"""
+
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
 @app.route("/event_profile/<event_id>/live", methods=['POST'])
 def event_submit(event_id):
+    """Saves registration information about user for an event"""
 
-    import pdb; pdb.set_trace()
+    # Gets the specific event information
     event = Event.query.get(event_id)
-    user_id = session.get("user_id")
 
+    # Verifies the user
+    user_id = session.get("user_id")
     if not user_id:
         flash("Please log in to register for event")
         return redirect("/")
 
+    # Gets Form Variables
     questions = event.questions
     values = request.form.getlist("question")
 
-    
+    # Gets Id for each question
     question_ids = [q.id for q in questions]
 
-
+    # Adds a new registration to the session
     new_registration = Registration()
     new_registration.user_id = user_id
     new_registration.event_id= event_id
@@ -434,7 +481,7 @@ def event_submit(event_id):
 
     db.session.add(new_registration)
     
-
+    # Adds the answers for each question to the session
     for i in range (len(questions)):
         new_answer = Answer()
         new_answer.value = values[i]
@@ -443,26 +490,28 @@ def event_submit(event_id):
 
 
         db.session.add(new_answer)
+    # Commits both the registration and all the answers to the database    
     db.session.commit()
 
-    flash("Successfully Registered for event")
-
-    # Charge if necessary
+    # Charge the attendee
     token = request.form.get('stripeToken', None)
-    # import pdb; pdb.set_trace()
     if token is not None:
         charged_id = charge_card(token, event.price)
         # TODO: store the charge_id in the event
         if not charged_id:
             raise Exception("Payment error")
     
+    flash("Successfully Registered for event")
+
     return redirect("/user_profile/%s" % user_id)
 
     
 def charge_card(token, value):
+    """Charges the credit card using Stripe API"""
+
     stripe.api_key = "sk_test_GATVlXiqmnj4W65d3Bt1k82e"
 
-    # # Create the charge on Stripe's servers - this will charge the user's card
+    # Create the charge on Stripe's servers - this will charge the user's card
     result = None
     try:
       charge = stripe.Charge.create(
@@ -480,19 +529,22 @@ def charge_card(token, value):
 
 @app.route("/event_profile/<event_id>/data", methods=['GET'])
 def event_data(event_id):
+    """Displays every row of data to the company"""
 
+    # Gets the event specific information
     event = Event.query.get(event_id)
-    logged_company_id = session.get("company_id")
 
+    # Verifies the company
+    logged_company_id = session.get("company_id")
     if event.company_id != logged_company_id:
         raise Exception("Company is not logged in.")
-
 
     return render_template("event_data.html", event=event)
 
 
 @app.route("/event_profile/<event_id>/csvdata", methods=['GET'])
 def download_to_csv(event_id):
+    """Downloads the registration data to a CSV"""
 
     f = StringIO()
     writer = CSVKitWriter(f)
@@ -516,32 +568,38 @@ def download_to_csv(event_id):
 
 @app.route("/event_profile/<event_id>/data/<registration_id>", methods=['GET'])
 def individual_registration(event_id, registration_id):
+    """Displays an individual registrants data"""
 
+    # Gets the event specific information
     event = Event.query.get(event_id)
+
+    # Verifies that the company is logged in
     registration = Registration.query.get(registration_id)
     logged_company_id = session.get("company_id")
-
     if event.company_id != logged_company_id:
         raise Exception("Company is not logged in.")
     if event.event_id != registration.event_id:
         raise Exception("Event is wrongo")
-
 
     return render_template("individual_event_data.html", registration=registration)
 
 
 @app.route("/event_profile/<event_id>/data/<registration_id>/delete", methods=['POST'])
 def delete_record(event_id, registration_id):
+    """Deletes an individual registrants data from the site and database"""
 
+    # Gets the registrants information
     registration = Registration.query.get(registration_id)
+
+    # Verifies that the company is logged in
     event = Event.query.get(event_id)
     logged_company_id = session.get("company_id")
-
     if event.company_id != logged_company_id:
         raise Exception("Company is not logged in.")
     if event.event_id != registration.event_id:
         raise Exception("Event is wrongo")
 
+    # Deletes row from the database
     db.session.delete(registration)
     db.session.commit()
 
