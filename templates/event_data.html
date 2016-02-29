@@ -9,6 +9,8 @@
 
 <div class="well spaced">
     <h2>{{ event.event_name }}</h2>
+    <p>Attendees Registered: {{ event.registrations|count }}</p>
+    <p>Amount Collected: ${{ event.registrations|sum(attribute='event.price')}}</p>
 
             <table class="table table-striped">
                 <tr>

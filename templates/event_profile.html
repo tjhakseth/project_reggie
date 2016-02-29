@@ -1,16 +1,40 @@
+
+<script src="https://code.jquery.com/jquery.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.js">
+</script>
+
+
 {% extends 'base.html' %}
 {% block body %}
-<br>
-<div class="well spaced" style="width:97%">
-  <h2> {{ event.event_name }} </h2>
 
-  <a href="/event_profile/{{ event.event_id }}/home">Site</a>
-</br>
-  <a href="/event_profile/{{ event.event_id }}/data">Registration Data</a>
-  <p>Attendees Registered: {{ event.registrations|count }}</p>
+<h2> {{ event.event_name }} Dashboard </h2>
 
+    <div class="event-chart">
+        <canvas id="lineChart"></canvas>
+        <div id="lineLegend" class="chart-legend"></div>
+    </div>
 
-  
+    <script>
+    // Make Line Chart of Registrations over time
+    var options = {
+      responsive: true
+    };
+    
+    var ctx_line = $("#lineChart").get(0).getContext("2d");
 
-</div>
+    $.get("/event_profile/{{ event.event_id }}/chart_data.json", function (data) {
+      var myLineChart = new Chart(ctx_line).Line(data, options);
+      $("#lineLegend").html(myLineChart.generateLegend());
+    });
+    </script>
+
+    <div>
+      <a href="/event_profile/{{ event.event_id }}/home">Site</a>
+    </div>
+    <div>
+      <a href="/event_profile/{{ event.event_id }}/data">Registration Data</a>
+    </div>
+      <p>Attendees Registered: {{ event.registrations|count }}</p>
+      <p>Amount Collected: ${{ event.registrations|sum(attribute='event.price')}}</p>
+    </div>
 {% endblock %}

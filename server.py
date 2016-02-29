@@ -54,6 +54,7 @@ def process_create_company():
     contact_person = request.form["contactperson"]
     company_phone = request.form["companyphone"]
     company_address = request.form["companyaddress"]
+    company_city = request.form["companycity"]
     company_state = request.form["companystate"]
     company_zip = request.form["companyzip"]
     password = request.form["password"]
@@ -66,6 +67,7 @@ def process_create_company():
                             contact_person=contact_person,
                             company_phone=company_phone,
                             company_address=company_address,
+                            company_city=company_city,
                             company_state=company_state,
                             company_zip=company_zip,
                             password=hashed)
@@ -247,6 +249,7 @@ def create_registration_form():
                     company_id=company_id,
                     venue=venue,
                     address=address,
+                    city=city,
                     state=state,
                     zipcode=zipcode,
                     date=date,
@@ -320,6 +323,51 @@ def event_profile(event_id):
 
     return render_template("event_profile.html", event=event)
 
+@app.route("/event_profile/<event_id>/chart_data.json")
+def get_data(event_id):
+
+    event = Event.query.get(event_id)
+
+    chart_data = {}
+
+    chart_data['labels'] = []
+
+
+    for reg in event.registrations:
+        # day =reg.timestamp.day
+        # month =reg.timestamp.month
+        hour =reg.timestamp.hour
+        minute =reg.timestamp.minute
+        # date = "%s/%s" %(month, day)
+        time = "%s:%s" %(hour, minute)
+        if time not in chart_data['labels']:
+            chart_data['labels'].append(time)
+
+        # data.append(len(event.registrations))
+
+    number = list(enumerate(event.registrations, start=1)) 
+    data = []
+    for i in number:
+        data.append(i[0])
+    
+
+    chart_data['datasets'] = [
+            {
+                "label": "Registrations",
+                "fillColor": "rgba(151,187,205,0.2)",
+                "strokeColor": "rgba(151,187,205,1)",
+                "pointColor": "rgba(151,187,205,1)",
+                "pointStrokeColor": "#fff",
+                "pointHighlightFill": "#fff",
+                "pointHighlightStroke": "rgba(151,187,205,1)",
+                "data": data
+            },
+        ]
+
+
+
+
+    return jsonify(chart_data)
 
 @app.route("/event_list", methods=["GET"])
 def event_list():
@@ -364,6 +412,7 @@ def uploaded_file(filename):
 @app.route("/event_profile/<event_id>/live", methods=['POST'])
 def event_submit(event_id):
 
+    import pdb; pdb.set_trace()
     event = Event.query.get(event_id)
     user_id = session.get("user_id")
 

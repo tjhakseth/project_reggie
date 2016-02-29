@@ -8,12 +8,12 @@
         $('#payment').hide();
         $('#next').click(function() {
             $('#payment').show();
-            $('#form').hide();
+            $('.form').hide();
             $('#next').hide();
         });
         $('#previous').click(function() {
             $('#payment').hide();
-            $('#form').show();
+            $('.form').show();
             $('#next').show();
         });
     });
@@ -29,42 +29,36 @@
         <img id="img" src="/static/uploads/{{ event.logo }}" alt="{{ event.logo }}" width="128" height="128"/>
     {% endif %}
     <h2>{{ event.event_name }}</h2>
-    <div id="form">
     <form action= "/event_profile/{{ event.event_id }}/live" method="POST">
         {% for question in event.questions %}
-            <div>
-                <label for="questions_{{ question.ordinal }}">
-                    {{ question.label }}
-                </label>
-            </div>
-            <div>
-                {% if question.selector == "Text" %}
-                    <input name="question" type="text"/>
-                {% elif question.selector == "Dropdown" %}
-                    <select name="question">
-                        {% for option in question.data %}
+        <div class="form">
+            <label for="questions_{{ question.ordinal }}">
+                {{ question.label }}
+            </label>
+        </div>
+        <div class="form">
+            {% if question.selector == "Text" %}
+                <input name="question" type="text"/>
+            {% elif question.selector == "Dropdown" %}
+                <select name="question">
+                    {% for option in question.data %}
                         <option>{{ option }}</option>
-                        {% endfor %}
-                    </select>
-                {% elif question.selector == "Radio Button" %}
-                    {% for option in question.data %}
+                    {% endfor %}
+                </select>
+            {% elif question.selector == "Radio Button" %}
+                {% for option in question.data %}
                     <input name="question" type="radio" value="{{ option }}" />{{ option }}
-                    {% endfor %}
-                {% elif question.selector == "Checkbox" %}
-                    {% for option in question.data %}
+                {% endfor %}
+            {% elif question.selector == "Checkbox" %}
+                {% for option in question.data %}
                     <input name="question" type="checkbox" value="{{ option }}"/>{{ option }}
-                    {% endfor %}
-                {% else %}
-                    <p> I dunno what you are talking about</p>
-                {% endif %}
-            </div>
+                {% endfor %}
+            {% else %}
+                <p> I dunno what you are talking about</p>
+            {% endif %}
+        </div>
         {% endfor %}
-    </div>
-
-        {% if event.price == 0 %}
-            <input type="submit" value="Submit Registration"/>
-        {% endif %}
-
+        
         <div id="payment">
         {% if event.price > 0 %}
             <table class="table table-striped">
@@ -77,8 +71,7 @@
                     <td> {{ event.price }}   
                 </tr>    
             </table>
-            <form action= "/event_profile/{{ event.event_id }}/live" method="POST">
-             <script
+            <script
                 src="https://checkout.stripe.com/checkout.js" class="stripe-button"
                 data-key="pk_test_bREAtGbwzyYL8PEJODo2uZuI"
                 data-image="/static/uploads/{{ event.logo }}"
@@ -87,10 +80,11 @@
                 data-amount="{{ event.price * 100 }}"
                 data-locale="auto">
             </script>
-        </form>
+        {% else %}
+            <input type="submit" value="Submit Registration"/>
         {% endif %}
 
-    </div>
+        </div>
     </form>
     <nav>
         <ul class="pager">
