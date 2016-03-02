@@ -14,47 +14,44 @@
         <p class="lead">Create Questions for the Registration Form.</p>
         <form action="/registration_form_submit/{{ new_event.event_id }}" method="POST" class="form-inline">
         <div id="questions">
-            <div class="panel panel-default" id="question">
+            <div class="panel panel-default hidden question" id="question_template">
                 <div class="panel-heading">
                     <h3 class="panel-title">Question</h3>
                 </div>
-            <div class="panel-body">
-            <div class="row">
-                <!-- Label -->
-                <div class="col-lg-3">
-                    <label for="label">Label</label>
-                    <input type="text" class="form-control" name="label" id="label">
+                <div class="panel-body">
+                    <div class="row">
+                        <!-- Label -->
+                        <div class="col-lg-3">
+                            <label for="label">Label</label>
+                            <input type="text" class="form-control" name="label" id="label">
+                        </div>
+
+                        <!-- Type -->
+                        <div class="col-lg-3">
+                            <label for="selector">Type</label>
+                                <select class="form-control" name="selector" id="type">
+                                    <option>Text</option>
+                                    <option>Large Text</option>
+                                    <option>Radio</option>
+                                    <option>Dropdown</option>
+                                    <option>Checkbox</option>
+                                </select>
+                        </div>
+                        <div class="col-lg-3">
+                            <button type="button" class="btn btn-default add_option">
+                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Options
+                            </button>
+                            <input type="hidden" name="data" class="data" value=""/>
+                            <div class="options">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-                <!-- Type -->
-
-                <div class="col-lg-3">
-                    <label for="selector">Type</label>
-                        <select class="form-control" name="selector" id="type">
-                            <option>Text</option>
-                            <option>Large Text</option>
-                            <option>Radio</option>
-                            <option>Dropdown</option>
-                            <option>Checkbox</option>
-                        </select>
-                </div>
-
-                <div id="options" class="col-lg-3">
-                    <button type="button" class="btn btn-default" id="add_option">
-                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Options
-                    </button>
-                    
-                    <label for="option"></label>
-                        <input type="text" class="form-control" name="option" id="option">
-                </div>
-            </div>
-
-            </div>
             </div>
         </div>
         </div>
-        <button type="button" class="btn btn-default" id="add_another_question">
-            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add another Question
+        <button type="button" class="btn btn-default" id="add_question">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Question
         </button>
         <button type="submit" class="btn btn-default">Save Registration Form</button>
         </form>
@@ -66,29 +63,42 @@
 
 
         function cloneQuestion() {
-            var question = $("#question").clone().remove("#ll")
+            var question = $("#question_template").clone();
             
             return question;
         }
 
-
-        var opts = []
         $(document).ready(function () {
-            $("#add_another_question").click(function () {
-                var newQuestion = cloneQuestion()
+            $("#add_question").click(function () {
+                var newQuestion = cloneQuestion();
+                newQuestion.toggleClass("hidden");
                 $("#questions").append(newQuestion);
 
             });
 
-            $('#option').hide();
-            $("#add_option").click(function () {
-                $('#option').show();
-                $("#options").append("<input type=text class=form-control name=option id=option>");
+            $(document).on("click", ".add_option", function () {
+                var button = $(this);
+                var options = button.parent().children('.options');
+                
+                options.removeClass("hidden");
+                options.append("<input type='text' class='form-control option' name='option'>");
+            });
 
+            $("form").submit(function (event) {
+                // Make sure to clean up the hidden question
+                $("#question_template").remove();
+
+                // JSONify the options for each visible question
+                $(".question").each(function(index, question) {
+                    var values = [];
+                    $(question).find(".option").each(function (index, option) {
+                        values.push($(option).val())
+                    });
+                    $(question).find('.data').val(JSON.stringify(values));
+                });
+                debugger;
             });
         });
-        // $("#options_for_" + $("question").attr("id")).val(JSON.stringify(options));
-
 
     </script>
 

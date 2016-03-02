@@ -333,7 +333,7 @@ def registration_form_submit(event_id):
     selectors = request.form.getlist('selector')
     print "**************************"
     print selectors
-    data = request.form.getlist('option')
+    data = request.form.getlist('data')
     print "**************************"
     print data
 
@@ -346,13 +346,12 @@ def registration_form_submit(event_id):
         new_question.selector=selectors[i]
         new_question.ordinal = i
         new_question.event_id = event_id
-        new_question.data = data[i]
-        # field_options = data[i]
+        field_options = data[i]
         #Json for the options for the selectors
-        # if field_options:
-        #     new_question.data = json.loads(data[i])
-        # else:
-        #     new_question.data = None
+        if field_options:
+            new_question.data = json.loads(data[i])
+        else:
+            new_question.data = None
 
         # Adds each question to the database
         db.session.add(new_question)
