@@ -2,6 +2,7 @@ Flask==0.10.1
 Flask-UUID
 flask-debugtoolbar
 flask_sqlalchemy
+Flask-Mail
 bcrypt
 csvkit
 stripe

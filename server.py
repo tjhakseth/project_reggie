@@ -11,6 +11,7 @@ from csvkit import CSVKitWriter, CSVKitReader
 from flask import Flask, Response, render_template, request, flash, redirect, session, jsonify, url_for, send_from_directory
 from flask_debugtoolbar import DebugToolbarExtension
 from flask.ext.uuid import FlaskUUID
+from flask.ext.mail import Mail, Message
 from jinja2 import StrictUndefined
 import stripe
 from werkzeug import secure_filename
@@ -21,7 +22,20 @@ stripe.api_key = "sk_test_GATVlXiqmnj4W65d3Bt1k82e"
 
 UPLOAD_FOLDER = 'static/uploads/'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+
 app = Flask(__name__)
+app.config.update(
+    DEBUG=True,
+    #EMAIL SETTINGS
+    MAIL_SERVER='smtp.gmail.com',
+    MAIL_PORT=587,
+    MAIL_USE_SSL=False,
+    MAIL_USE_TLS=True,
+    MAIL_USERNAME = 'reggieevent@gmail.com',
+    MAIL_PASSWORD = '31reggieevent'
+    )
+mail = Mail(app)
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 app.secret_key = "Reggieevents"
@@ -314,8 +328,16 @@ def registration_form_submit(event_id):
 
     # Get form variables
     labels = request.form.getlist('label')
+    print "**************************"
+    print labels
     selectors = request.form.getlist('selector')
-    data = request.form.getlist('options')
+    print "**************************"
+    print selectors
+    data = request.form.getlist('option')
+    print "**************************"
+    print data
+
+
 
     # For each label creates a new question
     for i in range (len(labels)):
@@ -324,12 +346,13 @@ def registration_form_submit(event_id):
         new_question.selector=selectors[i]
         new_question.ordinal = i
         new_question.event_id = event_id
-        field_options = data[i]
+        new_question.data = data[i]
+        # field_options = data[i]
         #Json for the options for the selectors
-        if field_options:
-            new_question.data = json.loads(data[i])
-        else:
-            new_question.data = None
+        # if field_options:
+        #     new_question.data = json.loads(data[i])
+        # else:
+        #     new_question.data = None
 
         # Adds each question to the database
         db.session.add(new_question)
@@ -370,14 +393,14 @@ def get_data(event_id):
     # Creates the x axis for the chart(date)
     chart_data['labels'] = []
     for reg in event.registrations:
-        # day =reg.timestamp.day
-        # month =reg.timestamp.month
-        hour =reg.timestamp.hour
-        minute =reg.timestamp.minute
-        # date = "%s/%s" %(month, day)
-        time = "%s:%s" %(hour, minute)
-        if time not in chart_data['labels']:
-            chart_data['labels'].append(time)
+        day =reg.timestamp.day
+        month =reg.timestamp.month
+        #hour =reg.timestamp.hour
+        #minute =reg.timestamp.minute
+        date = "%s/%s" %(month, day)
+        #time = "%s:%s" %(hour, minute)
+        if date not in chart_data['labels']:
+            chart_data['labels'].append()
 
         # data.append(len(event.registrations))
 
@@ -502,6 +525,12 @@ def event_submit(event_id):
             raise Exception("Payment error")
     
     flash("Successfully Registered for event")
+
+    msg = Message("You're Registered!!!!",
+                  sender="reggieevents@gmail.com",
+                  recipients=["tjhakseth@gmail.com"])
+    msg.body = "This is the email body"
+    mail.send(msg)
 
     return redirect("/user_profile/%s" % user_id)
 
