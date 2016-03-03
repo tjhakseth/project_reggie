@@ -47,14 +47,12 @@ app.jinja_env.undefined = StrictUndefined
 def homepage():
     """Homepage."""
 
-
     return render_template("homepage.html")
 
 
 @app.route('/create_company', methods=['GET'])
 def create_company():
     """Show form for company to signup."""
-
 
     return render_template("create_company_form.html")
 
@@ -273,9 +271,11 @@ def create_registration_form():
     city=request.form['city']
     state=request.form['state']
     zipcode=request.form['zipcode']
-    date=request.form['date']
+    start_date=request.form['startdate']
+    end_date=request.form['enddate']
+    start_time=request.form['starttime']
+    end_time=request.form['endtime']
     description=request.form['description']
-    number_of_fields = int(request.form['number_of_fields'])
     color = request.form['color']
     logo= request.files['logo']
     logo = logo.filename
@@ -288,9 +288,11 @@ def create_registration_form():
                     city=city,
                     state=state,
                     zipcode=zipcode,
-                    date=date,
+                    start_date=start_date,
+                    end_date=end_date,
+                    start_time=start_time,
+                    end_time=end_time,
                     description=description, 
-                    number_of_fields=number_of_fields, 
                     price=price, 
                     color=color, 
                     logo=logo)
@@ -303,8 +305,7 @@ def create_registration_form():
     if logo:
         upload = upload_file()
 
-    return render_template("create_registration_form.html", new_event=new_event, 
-            number_of_fields=number_of_fields)
+    return render_template("create_registration_form.html", new_event=new_event)
 
 def allowed_file(filename):
     """formatting the filename"""
@@ -399,7 +400,7 @@ def get_data(event_id):
         date = "%s/%s" %(month, day)
         #time = "%s:%s" %(hour, minute)
         if date not in chart_data['labels']:
-            chart_data['labels'].append()
+            chart_data['labels'].append(date)
 
         # data.append(len(event.registrations))
 
@@ -531,9 +532,10 @@ def event_submit(event_id):
     msg.body = "This is the email body"
     mail.send(msg)
 
-    return redirect("/user_profile/%s" % user_id)
+    # return redirect("/user_profile/%s" % user_id)
+    return render_template("success.html", event=event, user_id=user_id)
 
-    
+
 def charge_card(token, value):
     """Charges the credit card using Stripe API"""
 

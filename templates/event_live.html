@@ -39,6 +39,8 @@
         <div class="form">
             {% if question.selector == "Text" %}
                 <input name="question" type="text"/>
+            {% elif question.selector == "Large Text" %}
+                <input name="question" type="textarea"/>
             {% elif question.selector == "Dropdown" %}
                 <select name="question">
                     {% for option in question.data %}

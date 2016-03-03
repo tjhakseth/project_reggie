@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block body %}
+
+
+<h1> Congrats, you successfully registered for {{ event.event_name }}</h1>
+<a href="/user_profile/{{ user_id }}" class="btn btn-info" role="button">My Profile</a>        
+                
+
+{% endblock %}

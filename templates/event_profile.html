@@ -9,10 +9,12 @@
 
 <h2> {{ event.event_name }} Dashboard </h2>
 
-    <div class="event-chart">
-        <canvas id="lineChart"></canvas>
-        <div id="lineLegend" class="chart-legend"></div>
-    </div>
+    {% if event.registrations|count > 0 %}
+      <div class="event-chart">
+          <canvas id="lineChart" width="500" height="500"></canvas>
+          <div id="lineLegend" class="chart-legend"></div>
+      </div>
+    {% endif %}
 
     <script>
     // Make Line Chart of Registrations over time
@@ -25,6 +27,8 @@
     $.get("/event_profile/{{ event.event_id }}/chart_data.json", function (data) {
       var myLineChart = new Chart(ctx_line).Line(data, options);
       $("#lineLegend").html(myLineChart.generateLegend());
+      $('#lineLegend').width = 500
+      $('#lineLegend').height = 500
     });
     </script>
 

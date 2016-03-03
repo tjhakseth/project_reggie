@@ -11,7 +11,9 @@
         <img id="img" src="/static/uploads/{{ event.logo }}" alt="{{ event.logo }}" width="128" height="128"/>
     {% endif %}
     <h2>{{ event.event_name }}</h2>
-    <p>{{ event.venue }} {{ event.date }}</p>
+    <p>{{ event.venue }}</p>
+    <p>Start:{{ event.start_date }} at {{ event.start_time }}</p>
+    <p>End:{{ event.end_date }} at {{ event.end_time }}</p>
     <p>{{ event.description }}</p>
     <div id="map">
         <img src="https://maps.googleapis.com/maps/api/staticmap?center={{event.address}}&zoom=14&size=400x400&markers=color:red%7Clabel:A%7C{{event.address}},{{event.state}}&key=AIzaSyAK8OzEqj6R1Ln2oRPzUN6BsgekqdhtxFY">

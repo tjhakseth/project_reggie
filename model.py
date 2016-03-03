@@ -45,9 +45,11 @@ class Event(db.Model):
     city = db.Column(db.String(100))
     state  = db.Column(db.String(100))
     zipcode  = db.Column(db.String(100))
-    date = db.Column(db.DateTime)
+    start_date = db.Column(db.Date)
+    end_date = db.Column(db.Date)
+    start_time = db.Column(db.Time)
+    end_time = db.Column(db.Time)
     description = db.Column(db.String(1000))
-    number_of_fields = db.Column(db.Integer, nullable=False)
     price =db.Column(db.Integer, nullable=True)
     color =db.Column(db.String(100))
     logo =db.Column(db.String(100))
@@ -105,18 +107,18 @@ class Answer(db.Model):
 class Registration(db.Model):
     """Registration to event"""
 
-    __tablename__ = "registrations"
+    __tablename__="registrations"
 
-    id =db.Column(UUID, server_default=text("uuid_generate_v4()"), primary_key=True)
-    user_id =db.Column(UUID, db.ForeignKey('users.user_id'))
-    event_id =db.Column(UUID, db.ForeignKey('events.event_id'))
-    timestamp =db.Column(db.DateTime, nullable=False)
+    id=db.Column(UUID, server_default=text("uuid_generate_v4()"), primary_key=True)
+    user_id=db.Column(UUID, db.ForeignKey('users.user_id'))
+    event_id=db.Column(UUID, db.ForeignKey('events.event_id'))
+    timestamp=db.Column(db.DateTime, nullable=False)
 
 
-    user = db.relationship("User",
+    user=db.relationship("User",
                            backref=db.backref("registrations"))
 
-    event = db.relationship("Event",
+    event=db.relationship("Event",
                            backref=db.backref("registrations"))
 
 
