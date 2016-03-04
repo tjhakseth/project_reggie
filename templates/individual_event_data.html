@@ -20,7 +20,7 @@
                 <td> {{ answer.value }}</td>   
             {% endfor %}
                 <td> {{ registration.event.price }}</td>
-                <td>Edit</td>
+                <td><a href="/event_profile/{{ registration.event.event_id }}/data/{{ registration.id}}/edit" class="btn btn-info" role="button">Edit</a></td>
         </tr>    
     </table>
     <form action="/event_profile/{{ registration.event.event_id }}/data/{{ registration.id}}/delete" method='POST'>

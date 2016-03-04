@@ -1,0 +1,73 @@
+
+{% extends 'base.html' %}
+{% block body %}
+
+
+<div class="well spaced">
+    <h2>Attendee: {{ registration.user.user_firstname }}</h2>
+    </br>
+    <h2> Event: {{ registration.event.event_name }}</h2>
+
+    <form action="/event_profile/{{ registration.event.event_id }}/data/{{ registration.id}}/edit" method='POST'>
+        <table class="table table-striped">
+            <tr>
+                {% for question in registration.event.questions %}
+                    <th> {{ question.label }}</th>
+                {% endfor %}
+                    <th>Payment</th>
+            </tr>
+            <tr>
+                {% for answer in registration.answers %}
+                        {% if answer.question.selector == "Text" %}
+                            <td><input type="text" name="value" value="{{ answer.value }}" /></td>
+                        {% elif answer.question.selector == "Large Text" %}
+                            <td><input type="textarea" name="value" value="{{ answer.value }}" /></td>
+                        {% elif answer.question.selector == "Dropdown" %}
+                            <td><select name="value" >
+                                {% for option in answer.question.data %}
+                                    {% if option == answer.value %}
+                                        <option value="{{ answer.value }}" selected>{{ option }}</option>
+                                    {% else %}
+                                        <option value="{{ answer.value }}">{{ option }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select></td>
+                        {% elif answer.question.selector == "Radio Button" %}
+                                <td>
+                                    {% for option in answer.question.data %}
+                                        <div>
+                                        {% if option == answer.value %}
+                                            <input name="value" type="radio" value="{{ option }}" checked/>{{ option }}
+                                        {% else %}
+                                            <input name="value" type="radio" value="{{ option }}"/>{{ option }}
+                                        {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                </td>
+                        {% elif answer.question.selector == "Checkbox" %}
+                            <td>
+                                {% for option in answer.question.data %}
+                                <div>
+                                    {% if option == answer.value %}
+                                        <input name="value" type="checkbox" value="{{ option }}" checked="checked"/>{{ option }}
+                                    {% else %}
+                                        <input name="value" type="checkbox" value="{{ option }}"/>{{ option }}
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </td>
+                        {% else %}
+                            <p> I dunno what you are talking about</p>
+                        {% endif %}
+                </div>
+                {% endfor %}
+                    <td> {{ registration.event.price }}</td>
+            </tr>    
+        </table>
+    <a href="/event_profile/{{ registration.event.event_id }}/data/{{ registration.id}}" class="btn btn-info" role="button">Previous Page</a>
+    <input type='submit' value='Save Changes'>
+    </form>
+        
+                
+
+{% endblock %}

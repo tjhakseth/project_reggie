@@ -393,14 +393,14 @@ def get_data(event_id):
     # Creates the x axis for the chart(date)
     chart_data['labels'] = []
     for reg in event.registrations:
-        day =reg.timestamp.day
-        month =reg.timestamp.month
-        #hour =reg.timestamp.hour
-        #minute =reg.timestamp.minute
-        date = "%s/%s" %(month, day)
-        #time = "%s:%s" %(hour, minute)
-        if date not in chart_data['labels']:
-            chart_data['labels'].append(date)
+        #day =reg.timestamp.day
+        #month =reg.timestamp.month
+        hour =reg.timestamp.hour
+        minute =reg.timestamp.minute
+        #date = "%s/%s" %(month, day)
+        time = "%s:%s" %(hour, minute)
+        if time not in chart_data['labels']:
+            chart_data['labels'].append(time)
 
         # data.append(len(event.registrations))
 
@@ -596,7 +596,7 @@ def download_to_csv(event_id):
     return Response(f.getvalue(), mimetype='text/csv')
 
 
-@app.route("/event_profile/<event_id>/data/<registration_id>", methods=['GET'])
+@app.route("/event_profile/<event_id>/data/<registration_id>", methods=['GET', 'POST'])
 def individual_registration(event_id, registration_id):
     """Displays an individual registrants data"""
 
@@ -620,14 +620,19 @@ def delete_record(event_id, registration_id):
 
     # Gets the registrants information
     registration = Registration.query.get(registration_id)
+    event = Event.query.get(event_id)
 
     # Verifies that the company is logged in
-    event = Event.query.get(event_id)
     logged_company_id = session.get("company_id")
     if event.company_id != logged_company_id:
         raise Exception("Company is not logged in.")
     if event.event_id != registration.event_id:
         raise Exception("Event is wrongo")
+
+    answers_for_reg = Answer.query.filter_by(registration_id=registration_id).all()
+
+    for answer in answers_for_reg:
+         db.session.delete(answer)
 
     # Deletes row from the database
     db.session.delete(registration)
@@ -635,6 +640,39 @@ def delete_record(event_id, registration_id):
 
     return redirect("/event_profile/%s/data" % event_id)
 
+@app.route("/event_profile/<event_id>/data/<registration_id>/edit", methods=['GET'])
+def edit_record(event_id, registration_id):
+    """Opens the editable an individual registrants data from the site and database"""
+
+    registration = Registration.query.get(registration_id)
+    event = Event.query.get(event_id)
+
+    return render_template("edit_record.html", registration=registration)
+
+@app.route("/event_profile/<event_id>/data/<registration_id>/edit", methods=['POST'])
+def edit_record_submit(event_id, registration_id):
+    """Submits the edited individual registrants data from the site and database"""
+
+    registration = Registration.query.get(registration_id)
+    
+    event = Event.query.get(event_id)
+    logged_company_id = session.get("company_id")
+    if event.company_id != logged_company_id:
+        raise Exception("Company is not logged in.")
+    if event.event_id != registration.event_id:
+        raise Exception("Event is wrongo")
+
+    # import pdb; pdb.set_trace()
+    new_values = request.form.getlist('value')
+    for i in range(len(registration.answers)):
+        answer = registration.answers[i]
+        if answer.value != new_values[i]:
+            answer.value = new_values[i]
+            db.session.add(answer)
+
+    db.session.commit()
+
+    return redirect("/event_profile/%s/data/%s" % (event_id, registration_id))
 
 
 if __name__ == "__main__":

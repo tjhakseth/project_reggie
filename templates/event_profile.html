@@ -24,11 +24,12 @@
     
     var ctx_line = $("#lineChart").get(0).getContext("2d");
 
+
     $.get("/event_profile/{{ event.event_id }}/chart_data.json", function (data) {
       var myLineChart = new Chart(ctx_line).Line(data, options);
       $("#lineLegend").html(myLineChart.generateLegend());
-      $('#lineLegend').width = 500
-      $('#lineLegend').height = 500
+      // $('#lineLegend').width = 50
+      // $('#lineLegend').height = 50
     });
     </script>
 
