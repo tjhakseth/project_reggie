@@ -1,6 +1,6 @@
 """Models and database functions for Reggie."""
-import heapq
-import time
+# import heapq
+# import time
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import JSON, UUID
 from sqlalchemy import text
@@ -8,9 +8,9 @@ from sqlalchemy import text
 
 db = SQLAlchemy()
 
+
 ##############################################################################
 # Model definitions
-
 class Company(db.Model):
     """Company account in Reggie"""
 
@@ -26,11 +26,11 @@ class Company(db.Model):
     company_state = db.Column(db.String(200))
     company_zip = db.Column(db.String(200))
     password = db.Column(db.String(100))
-    
+
     def __repr__(self):
         """Provides helpful representation when printed"""
-
         return "<Company company_id=%s, company_name=%s, company_email%s>" % (self.company_id, self.company_name, self.company_email)
+
 
 class Event(db.Model):
     """Create an Event in reggie"""
@@ -43,37 +43,37 @@ class Event(db.Model):
     venue = db.Column(db.String(100))
     address = db.Column(db.String(100))
     city = db.Column(db.String(100))
-    state  = db.Column(db.String(100))
-    zipcode  = db.Column(db.String(100))
+    state = db.Column(db.String(100))
+    zipcode = db.Column(db.String(100))
     start_date = db.Column(db.Date)
     end_date = db.Column(db.Date)
     start_time = db.Column(db.Time)
     end_time = db.Column(db.Time)
     description = db.Column(db.String(1000))
-    price =db.Column(db.Integer, nullable=True)
-    color =db.Column(db.String(100))
-    logo =db.Column(db.String(100))
+    price = db.Column(db.Integer, nullable=True)
+    color = db.Column(db.String(100))
+    logo = db.Column(db.String(100))
     status = db.Column(db.String(30))
 
-    company = db.relationship("Company",
-                           backref=db.backref("events", order_by=event_id))
+    company = db.relationship("Company", backref=db.backref("events", order_by=event_id))
 
     def __repr__(self):
         """Provides helpful representation when printed"""
 
         return "<Event event_id=%s, event_name=%s, company_id%s>" % (self.event_id, self.event_name, self.company_id)
 
+
 class Question(db.Model):
     """Questions within a form"""
 
     __tablename__ = "questions"
 
-    id =db.Column(UUID, server_default=text("uuid_generate_v4()"), primary_key=True)
-    event_id =db.Column(UUID, db.ForeignKey('events.event_id'))
-    label =db.Column(db.String(100), nullable=False)
-    selector =db.Column(db.String(100), nullable=False)
-    ordinal=db.Column(db.Integer, nullable=False)
-    data=db.Column(JSON)
+    id = db.Column(UUID, server_default=text("uuid_generate_v4()"), primary_key=True)
+    event_id = db.Column(UUID, db.ForeignKey('events.event_id'))
+    label = db.Column(db.String(100), nullable=False)
+    selector = db.Column(db.String(100), nullable=False)
+    ordinal = db.Column(db.Integer, nullable=False)
+    data = db.Column(JSON)
 
     form = db.relationship("Event",
                            backref=db.backref("questions", order_by=ordinal))
@@ -83,49 +83,44 @@ class Question(db.Model):
 
         return "<Question id=%s, event_id=%s, label=%s, selector=%s, ordinal=%s>" % (self.id, self.event_id, self.label, self.selector, self.ordinal)
 
+
 class Answer(db.Model):
     """User Answers with a form"""
 
     __tablename__ = "answers"
 
-    id =db.Column(UUID, server_default=text("uuid_generate_v4()"), primary_key=True)
-    question_id =db.Column(UUID, db.ForeignKey('questions.id'), nullable=False)
-    registration_id =db.Column(UUID, db.ForeignKey('registrations.id'), nullable=False)
-    value =db.Column(db.String(100))
+    id = db.Column(UUID, server_default=text("uuid_generate_v4()"), primary_key=True)
+    question_id = db.Column(UUID, db.ForeignKey('questions.id'), nullable=False)
+    registration_id = db.Column(UUID, db.ForeignKey('registrations.id'), nullable=False)
+    value = db.Column(db.String(100))
 
-    registration = db.relationship("Registration",
-                           backref=db.backref("answers"))
-
-    question = db.relationship("Question",
-                           backref=db.backref("answers"))
+    registration = db.relationship("Registration", backref=db.backref("answers"))
+    question = db.relationship("Question", backref=db.backref("answers"))
 
     def __repr__(self):
         """Provides helpful representation when printed"""
 
         return "<Answer id=%s, registration_id=%s, question_id=%s, value=%s>" % (self.id, self.registration_id, self.question_id, self.value)
 
+
 class Registration(db.Model):
     """Registration to event"""
 
-    __tablename__="registrations"
+    __tablename__ = "registrations"
 
-    id=db.Column(UUID, server_default=text("uuid_generate_v4()"), primary_key=True)
-    user_id=db.Column(UUID, db.ForeignKey('users.user_id'))
-    event_id=db.Column(UUID, db.ForeignKey('events.event_id'))
-    timestamp=db.Column(db.DateTime, nullable=False)
+    id = db.Column(UUID, server_default=text("uuid_generate_v4()"), primary_key=True)
+    user_id = db.Column(UUID, db.ForeignKey('users.user_id'))
+    event_id = db.Column(UUID, db.ForeignKey('events.event_id'))
+    timestamp = db.Column(db.DateTime, nullable=False)
 
-
-    user=db.relationship("User",
-                           backref=db.backref("registrations"))
-
-    event=db.relationship("Event",
-                           backref=db.backref("registrations"))
-
+    user = db.relationship("User", backref=db.backref("registrations"))
+    event = db.relationship("Event", backref=db.backref("registrations"))
 
     def __repr__(self):
         """Provides helpful representation when printed"""
 
         return "<Registration id=%s, user_id=%s, event_id=%s, timestamp=%s>" % (self.id, self.user_id, self.event_id, self.timestamp)
+
 
 class User(db.Model):
     """User account in Reggie"""
@@ -145,16 +140,14 @@ class User(db.Model):
         return "<User user_id=%s, user_name=%s, user_email%s>" % (self.user_id, self.user_name, self.user_email)
 
 
-
 ##############################################################################
 # Helper functions
 
 def connect_to_db(app):
     """Connect the database to our Flask app."""
-
     # Configure to use our PostgreSQL database
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///reggiedb'
-    #app.config['SQLALCHEMY_ECHO'] = True
+    # app.config['SQLALCHEMY_ECHO'] = True
     db.app = app
     db.init_app(app)
 
@@ -166,6 +159,3 @@ if __name__ == "__main__":
     from server import app
     connect_to_db(app)
     print "Connected to DB."
-
-
-

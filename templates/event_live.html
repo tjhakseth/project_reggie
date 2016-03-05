@@ -37,6 +37,11 @@
             </label>
         </div>
         <div class="form">
+            {% if question.label == "Name" %}
+                <input name="question" type="text" value=""/>
+            {% elif question.label == "Email" %}
+                <input name="question" type="email" value=""/>
+            {% endif %}
             {% if question.selector == "Text" %}
                 <input name="question" type="text"/>
             {% elif question.selector == "Large Text" %}

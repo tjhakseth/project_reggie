@@ -1,16 +1,13 @@
-# stdlib
+"""Flask Endpoints for Reggie."""
 from datetime import datetime
 import json
-import sys
-import uuid
 from StringIO import StringIO
 import os
 # third party
 import bcrypt
-from csvkit import CSVKitWriter, CSVKitReader
-from flask import Flask, Response, render_template, request, flash, redirect, session, jsonify, url_for, send_from_directory
+from csvkit import CSVKitWriter
+from flask import Flask, Response, render_template, request, flash, redirect, session, jsonify, send_from_directory
 from flask_debugtoolbar import DebugToolbarExtension
-from flask.ext.uuid import FlaskUUID
 from flask.ext.mail import Mail, Message
 from jinja2 import StrictUndefined
 import stripe
@@ -18,22 +15,21 @@ from werkzeug import secure_filename
 # local
 from model import connect_to_db, db, Company, User, Event, Question, Answer, Registration
 
-stripe.api_key = "sk_test_GATVlXiqmnj4W65d3Bt1k82e"
-
 UPLOAD_FOLDER = 'static/uploads/'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 app = Flask(__name__)
 app.config.update(
     DEBUG=True,
-    #EMAIL SETTINGS
+    # EMAIL SETTINGS
     MAIL_SERVER='smtp.gmail.com',
     MAIL_PORT=587,
     MAIL_USE_SSL=False,
     MAIL_USE_TLS=True,
-    MAIL_USERNAME = 'reggieevent@gmail.com',
-    MAIL_PASSWORD = '31reggieevent'
-    )
+    MAIL_USERNAME='reggieevent@gmail.com',
+    MAIL_PASSWORD='31reggieevent',
+    STRIPE_KEY="sk_test_GATVlXiqmnj4W65d3Bt1k82e"
+)
 mail = Mail(app)
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -41,6 +37,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = "Reggieevents"
 
 app.jinja_env.undefined = StrictUndefined
+stripe.api_key = app.config['STRIPE_KEY']
 
 
 @app.route('/')
@@ -103,7 +100,6 @@ def process_create_company():
 def company_login():
     """Company login page"""
 
-
     return render_template("company_login_form.html")
 
 
@@ -158,7 +154,6 @@ def company_profile(company_id):
 def create_user():
     """Show form for users to signup."""
 
-
     return render_template("create_user_form.html")
 
 
@@ -198,8 +193,7 @@ def process_create_user():
 
 @app.route('/user_login', methods=['GET'])
 def user_login():
-    """user login page"""
-
+    """User login page"""
 
     return render_template("user_login_form.html")
 
@@ -216,7 +210,7 @@ def user_login_process():
     # Hashing the password
     hashed = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
 
-    # Looking up the user in the database 
+    # Looking up the user in the database
     user = User.query.filter_by(user_email=user_email).first()
 
     if not user:
@@ -254,48 +248,50 @@ def user_detail(user_id):
 
 @app.route('/create_event', methods=['GET'])
 def create_event():
-    """create event"""
+    """Create event"""
 
     return render_template("create_event.html")
 
 
 @app.route('/create_reg', methods=['GET', 'POST'])
 def create_registration_form():
-    """create event for registration form and landing page"""
+    """Create event for registration form and landing page"""
 
     # Get form variables
-    company_id=session.get('company_id')
-    event_name=request.form['event_name']
-    venue=request.form['venue']
-    address=request.form['address']
-    city=request.form['city']
-    state=request.form['state']
-    zipcode=request.form['zipcode']
-    start_date=request.form['startdate']
-    end_date=request.form['enddate']
-    start_time=request.form['starttime']
-    end_time=request.form['endtime']
-    description=request.form['description']
+    company_id = session.get('company_id')
+    event_name = request.form['event_name']
+    venue = request.form['venue']
+    address = request.form['address']
+    city = request.form['city']
+    state = request.form['state']
+    zipcode = request.form['zipcode']
+    start_date = request.form['startdate']
+    end_date = request.form['enddate']
+    start_time = request.form['starttime']
+    end_time = request.form['endtime']
+    description = request.form['description']
     color = request.form['color']
-    logo= request.files['logo']
+    logo = request.files['logo']
     logo = logo.filename
     price = request.form['price']
 
-    new_event = Event(event_name=event_name,
-                    company_id=company_id,
-                    venue=venue,
-                    address=address,
-                    city=city,
-                    state=state,
-                    zipcode=zipcode,
-                    start_date=start_date,
-                    end_date=end_date,
-                    start_time=start_time,
-                    end_time=end_time,
-                    description=description, 
-                    price=price, 
-                    color=color, 
-                    logo=logo)
+    new_event = Event(
+        event_name=event_name,
+        company_id=company_id,
+        venue=venue,
+        address=address,
+        city=city,
+        state=state,
+        zipcode=zipcode,
+        start_date=start_date,
+        end_date=end_date,
+        start_time=start_time,
+        end_time=end_time,
+        description=description,
+        price=price,
+        color=color,
+        logo=logo
+    )
 
     # Adding new event to the database
     db.session.add(new_event)
@@ -303,25 +299,27 @@ def create_registration_form():
 
     # If there is a logo, calls the upload file function
     if logo:
-        upload = upload_file()
+        upload_file()
 
     return render_template("create_registration_form.html", new_event=new_event)
 
+
 def allowed_file(filename):
-    """formatting the filename"""
+    """Formatting the filename"""
 
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
 def upload_file():
-    """saving the logo to folder static/uploads"""
+    """Saving the logo to folder static/uploads"""
 
     if request.method == 'POST':
         file = request.files['logo']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            
+
 
 @app.route("/registration_form_submit/<event_id>", methods=['POST'])
 def registration_form_submit(event_id):
@@ -338,17 +336,15 @@ def registration_form_submit(event_id):
     print "**************************"
     print data
 
-
-
     # For each label creates a new question
-    for i in range (len(labels)):
+    for i in range(len(labels)):
         new_question = Question()
-        new_question.label=labels[i]
-        new_question.selector=selectors[i]
+        new_question.label = labels[i]
+        new_question.selector = selectors[i]
         new_question.ordinal = i
         new_question.event_id = event_id
         field_options = data[i]
-        #Json for the options for the selectors
+        # Json for the options for the selectors
         if field_options:
             new_question.data = json.loads(data[i])
         else:
@@ -358,7 +354,7 @@ def registration_form_submit(event_id):
         db.session.add(new_question)
         db.session.commit()
 
-    flash("Successfully created event") 
+    flash("Successfully created event")
 
     return redirect("/event_profile/%s" % event_id)
 
@@ -393,19 +389,19 @@ def get_data(event_id):
     # Creates the x axis for the chart(date)
     chart_data['labels'] = []
     for reg in event.registrations:
-        #day =reg.timestamp.day
-        #month =reg.timestamp.month
-        hour =reg.timestamp.hour
-        minute =reg.timestamp.minute
-        #date = "%s/%s" %(month, day)
-        time = "%s:%s" %(hour, minute)
+        # day =reg.timestamp.day
+        # month =reg.timestamp.month
+        hour = reg.timestamp.hour
+        minute = reg.timestamp.minute
+        # date = "%s/%s" %(month, day)
+        time = "%s:%s" % (hour, minute)
         if time not in chart_data['labels']:
             chart_data['labels'].append(time)
 
         # data.append(len(event.registrations))
 
-    # Creates the data points 
-    number = list(enumerate(event.registrations, start=1)) 
+    # Creates the data points
+    number = list(enumerate(event.registrations, start=1))
     data = []
     for i in number:
         data.append(i[0])
@@ -446,7 +442,7 @@ def event_landing_page(event_id):
 
     # Checks for a logo and calls upload_file if there is a logo
     if event.logo:
-        logo = uploaded_file(event.logo)
+        uploaded_file(event.logo)
 
     return render_template("landing_page.html", event=event)
 
@@ -464,16 +460,19 @@ def event_profile_live(event_id):
     # Gets the specific event information
     event = Event.query.get(event_id)
 
+    # user_id = session.get("user_id")
+    # if not user_id:
+    #     flash("Please log in to register for event")
+    #     return redirect("/")
+    # user = User.query.get(user_id)
+    # print"****************************"
+    # print event
+    # print user_id
     # Checks for a logo and calls upload_file if there is a logo
     if event.logo:
-        logo = uploaded_file(event.logo)
+        uploaded_file(event.logo)
 
     return render_template("event_live.html", event=event)
-
-def uploaded_file(filename):
-    """Uploads the logo on the landing page"""
-
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
 @app.route("/event_profile/<event_id>/live", methods=['POST'])
@@ -488,6 +487,7 @@ def event_submit(event_id):
     if not user_id:
         flash("Please log in to register for event")
         return redirect("/")
+    # user = User.query.get(user_id)
 
     # Gets Form Variables
     questions = event.questions
@@ -499,21 +499,20 @@ def event_submit(event_id):
     # Adds a new registration to the session
     new_registration = Registration()
     new_registration.user_id = user_id
-    new_registration.event_id= event_id
-    new_registration.timestamp= datetime.now()
+    new_registration.event_id = event_id
+    new_registration.timestamp = datetime.now()
 
     db.session.add(new_registration)
-    
+
     # Adds the answers for each question to the session
-    for i in range (len(questions)):
+    for i in range(len(questions)):
         new_answer = Answer()
         new_answer.value = values[i]
         new_answer.question_id = question_ids[i]
         new_answer.registration = new_registration
 
-
         db.session.add(new_answer)
-    # Commits both the registration and all the answers to the database    
+    # Commits both the registration and all the answers to the database
     db.session.commit()
 
     # Charge the attendee
@@ -523,7 +522,7 @@ def event_submit(event_id):
         # TODO: store the charge_id in the event
         if not charged_id:
             raise Exception("Payment error")
-    
+
     flash("Successfully Registered for event")
 
     msg = Message("You're Registered!!!!",
@@ -538,22 +537,19 @@ def event_submit(event_id):
 
 def charge_card(token, value):
     """Charges the credit card using Stripe API"""
-
-    stripe.api_key = "sk_test_GATVlXiqmnj4W65d3Bt1k82e"
-
     # Create the charge on Stripe's servers - this will charge the user's card
     result = None
     try:
       charge = stripe.Charge.create(
-          amount=value * 100, # amount in cents, again
+          amount=value * 100,  # amount in cents, again
           currency="usd",
           source=token,
           description="Example charge"
       )
       result = charge.id
-    except stripe.error.CardError, e:
+    except stripe.error.CardError:
         pass
-    
+
     return result
 
 
@@ -585,11 +581,12 @@ def download_to_csv(event_id):
     for question in event.questions:
         headers.append(question.label)
     writer.writerow(headers)
-    
+
     # List entries for each registration
     for registration in event.registrations:
         data = []
-        for answer in registration.answers:
+        sorted_answers = sorted(registration.answers, key=lambda a: a.question.ordinal)
+        for answer in sorted_answers:
             data.append(answer.value)
         writer.writerow(data)
 
@@ -605,6 +602,7 @@ def individual_registration(event_id, registration_id):
 
     # Verifies that the company is logged in
     registration = Registration.query.get(registration_id)
+
     logged_company_id = session.get("company_id")
     if event.company_id != logged_company_id:
         raise Exception("Company is not logged in.")
@@ -640,21 +638,35 @@ def delete_record(event_id, registration_id):
 
     return redirect("/event_profile/%s/data" % event_id)
 
+
+def get_sorted_registration_answers(registration):
+    """Fetches all answers for the registration, sorted by question.ordinal"""
+    answers = Answer.query.join(
+        Question
+    ).filter(
+        Answer.registration == registration
+    ).order_by(
+        Question.ordinal
+    ).all()
+
+    return answers
+
+
 @app.route("/event_profile/<event_id>/data/<registration_id>/edit", methods=['GET'])
 def edit_record(event_id, registration_id):
     """Opens the editable an individual registrants data from the site and database"""
 
     registration = Registration.query.get(registration_id)
-    event = Event.query.get(event_id)
 
     return render_template("edit_record.html", registration=registration)
+
 
 @app.route("/event_profile/<event_id>/data/<registration_id>/edit", methods=['POST'])
 def edit_record_submit(event_id, registration_id):
     """Submits the edited individual registrants data from the site and database"""
 
     registration = Registration.query.get(registration_id)
-    
+
     event = Event.query.get(event_id)
     logged_company_id = session.get("company_id")
     if event.company_id != logged_company_id:
@@ -663,11 +675,18 @@ def edit_record_submit(event_id, registration_id):
         raise Exception("Event is wrongo")
 
     # import pdb; pdb.set_trace()
-    new_values = request.form.getlist('value')
-    for i in range(len(registration.answers)):
-        answer = registration.answers[i]
-        if answer.value != new_values[i]:
-            answer.value = new_values[i]
+    answers = get_sorted_registration_answers(registration)
+    for i in range(len(answers)):
+        answer = answers[i]
+        print answer.question.label
+        print "**********************"
+        print answer
+        value_key = 'value_%s' % i
+        value = request.form.get(value_key)
+        print "**********************"
+        print value_key
+        if answer.value != value:
+            answer.value = value
             db.session.add(answer)
 
     db.session.commit()
@@ -676,7 +695,6 @@ def edit_record_submit(event_id, registration_id):
 
 
 if __name__ == "__main__":
-    
     app.debug = True
 
     connect_to_db(app)

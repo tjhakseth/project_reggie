@@ -16,7 +16,7 @@
                 <th>Edit</th>
         </tr>
         <tr>
-            {% for answer in registration.answers %}
+            {% for answer in registration.answers|sort(attribute='question.ordinal') %}
                 <td> {{ answer.value }}</td>   
             {% endfor %}
                 <td> {{ registration.event.price }}</td>

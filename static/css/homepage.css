@@ -1,8 +1,9 @@
 body {
   padding-top: 0px;
-  background-image: url("/static/img/wood.jpg");
+  background-image: url("/static/img/ggbridge.jpg");
   background-repeat: no-repeat;
   background-size: 100% 100%;
+  background-opacity: 0.1
 
 }
 
@@ -12,7 +13,7 @@ body {
   font-family: "Georgia", "Serif";
   font-style: oblique;
   font-size: 150px;
-  color:  #e0ebeb;
+  color: hsl(360, 45%, 30%);
 
 }
 .littlereg {
@@ -21,7 +22,7 @@ body {
   font-family: "Georgia", "Serif";
   font-style: oblique;
   font-size: 40px;
-  color:  #e0ebeb;
+  color: hsl(360, 45%, 30%);
 
 }
 #company {
@@ -30,7 +31,7 @@ body {
   font-family: "Georgia", "Serif";
   font-style: oblique;
   font-size: 30px;
-  color:  #e0ebeb;
+  color:  hsl(360, 45%, 30%);
 
 }
 #individual {
@@ -39,7 +40,7 @@ body {
   font-family: "Georgia", "Serif";
   font-style: oblique;
   font-size: 30px;
-  color:  #e0ebeb;
+  color:  hsl(360, 45%, 30%);
 
 }
 

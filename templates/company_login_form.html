@@ -1,7 +1,9 @@
+<link href="/static/css/form.css" rel="stylesheet">
+
 {% extends 'base.html' %}
 
 {% block body %}
-
+<div class="container-fluid">
 <h1>Company Login Page</h1>
     <form action="/company_login" method="POST">
 
@@ -18,7 +20,7 @@
         </div>
 
         <div class="form-group">
-            <input type="submit" value="Enter my company account" class="btn btn-danger">
+            <input type="submit" value="Enter my company account" class="btn btn-default">
         </div>
     </form>
 

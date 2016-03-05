@@ -1,0 +1,21 @@
+body {
+  padding-top: 0px;
+  background-image: url("/static/img/ggbridge.jpg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-opacity: 0.1
+
+}
+h1 {
+  padding: 0px 200px 20px 200px;
+  text-align: right;
+  font-family: "Georgia", "Serif";
+  font-style: oblique;
+  font-size: 50px;
+  color: hsl(360, 45%, 30%);
+}
+
+form {
+  padding: 0px 0px 0px 850px;
+  text-align: left;
+}

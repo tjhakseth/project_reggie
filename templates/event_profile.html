@@ -9,9 +9,21 @@
 
 <h2> {{ event.event_name }} Dashboard </h2>
 
+  <div>
+    <a href="/event_profile/{{ event.event_id }}/home">Site</a>
+  </div>
+  <div>
+    <a href="/event_profile/{{ event.event_id }}/data">Registration Data</a>
+  </div>
+  <div>
+    <p>Attendees Registered: {{ event.registrations|count }}</p>
+    <p>Amount Collected: ${{ event.registrations|sum(attribute='event.price')}}</p>
+  </div>
+
     {% if event.registrations|count > 0 %}
-      <div class="event-chart">
-          <canvas id="lineChart" width="500" height="500"></canvas>
+      <div class="event-chart" style= "width:500px;height:500px">
+          <canvas id="lineChart"></canvas>
+          
           <div id="lineLegend" class="chart-legend"></div>
       </div>
     {% endif %}
@@ -33,13 +45,5 @@
     });
     </script>
 
-    <div>
-      <a href="/event_profile/{{ event.event_id }}/home">Site</a>
-    </div>
-    <div>
-      <a href="/event_profile/{{ event.event_id }}/data">Registration Data</a>
-    </div>
-      <p>Attendees Registered: {{ event.registrations|count }}</p>
-      <p>Amount Collected: ${{ event.registrations|sum(attribute='event.price')}}</p>
-    </div>
+    
 {% endblock %}

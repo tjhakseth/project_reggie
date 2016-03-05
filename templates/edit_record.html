@@ -17,13 +17,13 @@
                     <th>Payment</th>
             </tr>
             <tr>
-                {% for answer in registration.answers %}
+                {% for answer in registration.answers|sort(attribute='question.ordinal') %}
                         {% if answer.question.selector == "Text" %}
-                            <td><input type="text" name="value" value="{{ answer.value }}" /></td>
+                            <td><input type="text" name="value_{{ loop.index0 }}" value="{{ answer.value }}" /></td>
                         {% elif answer.question.selector == "Large Text" %}
-                            <td><input type="textarea" name="value" value="{{ answer.value }}" /></td>
+                            <td><input type="textarea" name="value_{{ loop.index0 }}" value="{{ answer.value }}" /></td>
                         {% elif answer.question.selector == "Dropdown" %}
-                            <td><select name="value" >
+                            <td><select name="value_{{ loop.index0 }}" >
                                 {% for option in answer.question.data %}
                                     {% if option == answer.value %}
                                         <option value="{{ answer.value }}" selected>{{ option }}</option>
@@ -34,27 +34,33 @@
                             </select></td>
                         {% elif answer.question.selector == "Radio Button" %}
                                 <td>
-                                    {% for option in answer.question.data %}
-                                        <div>
-                                        {% if option == answer.value %}
-                                            <input name="value" type="radio" value="{{ option }}" checked/>{{ option }}
-                                        {% else %}
-                                            <input name="value" type="radio" value="{{ option }}"/>{{ option }}
-                                        {% endif %}
-                                        </div>
-                                    {% endfor %}
+                                    {% with %}
+                                        {% set question_index = loop.index0 %}
+                                        {% for option in answer.question.data %}
+                                            <div>
+                                            {% if option == answer.value %}
+                                                <input name="value_{{ question_index }}" type="radio" value="{{ option }}" checked/>{{ option }}
+                                            {% else %}
+                                                <input name="value_{{ question_index }}" type="radio" value="{{ option }}"/>{{ option }}
+                                            {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                    {% endwith %}
                                 </td>
                         {% elif answer.question.selector == "Checkbox" %}
                             <td>
-                                {% for option in answer.question.data %}
-                                <div>
-                                    {% if option == answer.value %}
-                                        <input name="value" type="checkbox" value="{{ option }}" checked="checked"/>{{ option }}
-                                    {% else %}
-                                        <input name="value" type="checkbox" value="{{ option }}"/>{{ option }}
-                                    {% endif %}
-                                </div>
-                                {% endfor %}
+                                {% with %}
+                                    {% set question_index = loop.index0 %}
+                                    {% for option in answer.question.data %}
+                                    <div>
+                                        {% if option == answer.value %}
+                                            <input name="value_{{ question_index }}" type="checkbox" value="{{ option }}" checked="checked"/>{{ option }}
+                                        {% else %}
+                                            <input name="value_{{ question_index }}" type="checkbox" value="{{ option }}"/>{{ option }}
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                {% endwith %}
                             </td>
                         {% else %}
                             <p> I dunno what you are talking about</p>
