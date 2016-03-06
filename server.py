@@ -460,19 +460,19 @@ def event_profile_live(event_id):
     # Gets the specific event information
     event = Event.query.get(event_id)
 
-    # user_id = session.get("user_id")
-    # if not user_id:
-    #     flash("Please log in to register for event")
-    #     return redirect("/")
-    # user = User.query.get(user_id)
-    # print"****************************"
-    # print event
-    # print user_id
-    # Checks for a logo and calls upload_file if there is a logo
+    user_id = session.get("user_id")
+    if not user_id:
+        flash("Please log in to register for event")
+        return redirect("/")
+    user = User.query.get(user_id)
+    print"****************************"
+    print event
+    print user
+
     if event.logo:
         uploaded_file(event.logo)
 
-    return render_template("event_live.html", event=event)
+    return render_template("event_live.html", event=event, user=user)
 
 
 @app.route("/event_profile/<event_id>/live", methods=['POST'])

@@ -38,11 +38,10 @@
         </div>
         <div class="form">
             {% if question.label == "Name" %}
-                <input name="question" type="text" value=""/>
+                <input name="question" type="text" value="{{ user.user_firstname }}"/>
             {% elif question.label == "Email" %}
-                <input name="question" type="email" value=""/>
-            {% endif %}
-            {% if question.selector == "Text" %}
+                <input name="question" type="email" value=" {{ user.user_email }}"/>
+            {% elif question.selector == "Text" %}
                 <input name="question" type="text"/>
             {% elif question.selector == "Large Text" %}
                 <input name="question" type="textarea"/>
