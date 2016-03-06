@@ -12,6 +12,7 @@ from flask.ext.mail import Mail, Message
 from jinja2 import StrictUndefined
 import stripe
 from werkzeug import secure_filename
+from werkzeug.exceptions import Forbidden
 # local
 from model import connect_to_db, db, Company, User, Event, Question, Answer, Registration
 
@@ -90,8 +91,7 @@ def process_create_company():
     # Saving the session
     session["company_id"] = new_company.company_id
 
-    flash("Company %s added." % company_name)
-    flash("Logged in")
+    flash("%s added." % company_name, "success")
 
     return redirect("/company_profile/%s" % new_company.company_id)
 
@@ -108,30 +108,27 @@ def company_login_process():
     """Process company login."""
 
     # Get form variables
-    company_email = request.form["company_email"]
+    company_email = request.form["email"]
     password = request.form["password"]
     password_bytes = password.encode('utf-8')
 
-    hashed = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
-
     # Query for the company email
     company = Company.query.filter_by(company_email=company_email).first()
+    company_pw = company.password.encode('utf-8')
 
     if not company:
-        flash("Incorrect login credentials")
+        flash("Incorrect login credentials", "danger")
         return redirect("/company_login")
 
     # Verifying the password
-    if bcrypt.hashpw(password_bytes, hashed) == hashed:
-        flash("Welcome")
+    if bcrypt.hashpw(password_bytes, company_pw) == company_pw:
+        flash("Succcessfully Logged In", "success")
     else:
-        flash("Incorrect login credentials")
+        flash("Incorrect login credentials", "danger")
         return redirect("/company_login")
 
     # Saving the session
     session["company_id"] = company.company_id
-
-    flash("Logged in")
 
     return redirect("/company_profile/%s" % company.company_id)
 
@@ -145,7 +142,7 @@ def company_profile(company_id):
 
     # Verifying the company is logged in
     if company.company_id != company_id:
-        raise Exception("Company is not logged in.")
+        raise Forbidden("Company is not logged in.")
 
     return render_template("company_profile.html", company=company)
 
@@ -185,8 +182,7 @@ def process_create_user():
     # Saving the session
     session["user_id"] = new_user.user_id
 
-    flash("User %s added." % user_email)
-    flash("Logged in")
+    flash("%s added." % user_email, "success")
 
     return redirect("/user_profile/%s" % new_user.user_id)
 
@@ -207,27 +203,23 @@ def user_login_process():
     password = request.form["password"]
     password_bytes = password.encode('utf-8')
 
-    # Hashing the password
-    hashed = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
-
     # Looking up the user in the database
     user = User.query.filter_by(user_email=user_email).first()
+    user_pw = user.password.encode('utf-8')
 
     if not user:
-        flash("Incorrect login credentials")
+        flash("Incorrect login credentials", "danger")
         return redirect("/user_login")
 
     # Verifying the password
-    if bcrypt.hashpw(password_bytes, hashed) == hashed:
-        flash("Welcome")
+    if bcrypt.hashpw(password_bytes, user_pw) == user_pw:
+        flash("Succcessfully Logged In", "success")
     else:
-        flash("Incorrect login credentials")
+        flash("Incorrect login credentials", "danger")
         return redirect("/user_login")
 
     # Saving the session
     session["user_id"] = user.user_id
-
-    flash("Logged in")
 
     return redirect("/user_profile/%s" % user.user_id)
 
@@ -241,7 +233,7 @@ def user_detail(user_id):
 
     # Verifying the user
     if user.user_id != logged_user_id:
-        raise Exception("User is not logged in.")
+        raise Forbidden("User is not logged in.")
 
     return render_template("user_profile.html", user=user)
 
@@ -354,7 +346,7 @@ def registration_form_submit(event_id):
         db.session.add(new_question)
         db.session.commit()
 
-    flash("Successfully created event")
+    flash("Successfully created event", "success")
 
     return redirect("/event_profile/%s" % event_id)
 
@@ -371,7 +363,7 @@ def event_profile(event_id):
     company_id = session.get("company_id")
 
     if company != company_id:
-        raise Exception("Company is not logged in.")
+        raise Forbidden("Company is not logged in.")
 
     return render_template("event_profile.html", event=event)
 
@@ -462,7 +454,7 @@ def event_profile_live(event_id):
 
     user_id = session.get("user_id")
     if not user_id:
-        flash("Please log in to register for event")
+        flash("Please log in to register for event", "warning")
         return redirect("/")
     user = User.query.get(user_id)
     print"****************************"
@@ -485,7 +477,7 @@ def event_submit(event_id):
     # Verifies the user
     user_id = session.get("user_id")
     if not user_id:
-        flash("Please log in to register for event")
+        flash("Please log in to register for event", "warning")
         return redirect("/")
     # user = User.query.get(user_id)
 
@@ -523,7 +515,7 @@ def event_submit(event_id):
         if not charged_id:
             raise Exception("Payment error")
 
-    flash("Successfully Registered for event")
+    flash("Successfully Registered for event", "success")
 
     msg = Message("You're Registered!!!!",
                   sender="reggieevents@gmail.com",
@@ -563,7 +555,7 @@ def event_data(event_id):
     # Verifies the company
     logged_company_id = session.get("company_id")
     if event.company_id != logged_company_id:
-        raise Exception("Company is not logged in.")
+        raise Forbidden("Company is not logged in.")
 
     return render_template("event_data.html", event=event)
 
@@ -605,9 +597,9 @@ def individual_registration(event_id, registration_id):
 
     logged_company_id = session.get("company_id")
     if event.company_id != logged_company_id:
-        raise Exception("Company is not logged in.")
+        raise Forbidden("Company is not logged in.")
     if event.event_id != registration.event_id:
-        raise Exception("Event is wrongo")
+        raise Forbidden("Event is wrongo")
 
     return render_template("individual_event_data.html", registration=registration)
 
@@ -623,9 +615,9 @@ def delete_record(event_id, registration_id):
     # Verifies that the company is logged in
     logged_company_id = session.get("company_id")
     if event.company_id != logged_company_id:
-        raise Exception("Company is not logged in.")
+        raise Forbidden("Company is not logged in.")
     if event.event_id != registration.event_id:
-        raise Exception("Event is wrongo")
+        raise Forbidden("Event is wrongo")
 
     answers_for_reg = Answer.query.filter_by(registration_id=registration_id).all()
 
@@ -670,9 +662,9 @@ def edit_record_submit(event_id, registration_id):
     event = Event.query.get(event_id)
     logged_company_id = session.get("company_id")
     if event.company_id != logged_company_id:
-        raise Exception("Company is not logged in.")
+        raise Forbidden("Company is not logged in.")
     if event.event_id != registration.event_id:
-        raise Exception("Event is wrongo")
+        raise Forbidden("Event is wrongo")
 
     # import pdb; pdb.set_trace()
     answers = get_sorted_registration_answers(registration)

@@ -52,13 +52,23 @@
   </div>
   <div>
 
+<!--         {% with msgs = get_flashed_messages(with_categories=true) %}
+          {% if msgs %}
+            {%- for msg in msgs %}
+              <div class="alert alert-danger">
+                {{ msg }}
+              </div>
+            {% endfor -%}
+          {% endif %}
+        {% endwith %} -->
+
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-        <ul class=flashes>
+        <div class=flashes>
           {% for category, message in messages %}
-            <li class="{{ category }}">{{ message }}</li>
+            <div class="alert alert-{{ category }}">{{ message }}</div>
           {% endfor %}
-        </ul>  
+        </div>  
         {% endif %}
       {% endwith %}
 

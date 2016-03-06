@@ -25,6 +25,15 @@ body {
   color: #7a5252;
 
 }
+p {
+  padding: 10px 100px 10px 600px;
+  text-align: center;
+  font-family: "Georgia", "Serif";
+  font-style: oblique;
+  font-size: 20px;
+  color: #7a5252;
+
+}
 #company {
   padding: 0px 25px 10px 20px;
   text-align: right;

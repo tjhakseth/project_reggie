@@ -16,8 +16,12 @@ h1 {
   color:#7a5252;
 }
 
-#header {
-    color:#7a5252;
+.header {
+  color:#7a5252;
+}
+.loginheader {
+  padding: 0px 250px 20px 0px;
+  color:#7a5252;
 }
 form {
   padding: 0px 0px 0px 750px;
