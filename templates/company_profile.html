@@ -1,20 +1,22 @@
+<link href="/static/css/company_profile.css" rel="stylesheet">
+
 {% extends 'base.html' %}
 {% block body %}
-
+<div id="transbox">
 <div class="container-fluid">
-  <h2> Welcome {{ company.contact_person }} at {{ company.company_name }}</h2>
-
-    <ul>
-        <a href="/create_event">Create Event</a>
-    </ul>
-    <ul>Events</ul>
-     
+  <h2 id="header"> Welcome {{ company.contact_person }} at {{ company.company_name }}</h2>
+    <ul id="littleheader">Events</ul>
         {% for event in company.events %}
-        <ul> 
-            <a href="/event_profile/{{ event.event_id }}"/>{{ event.event_name }}</a>
-        </ul>
+            <ul class="events"> 
+                <a href="/event_profile/{{ event.event_id }}"/>{{ event.event_name }}</a>
+            </ul>
         {% endfor %}
-    </p>
-
+    <ul>
+        <a href="/create_event">
+            <input type="button" value="Create Event" class="button"/>
+        </a>
+    </ul>
+    
+</div>
 </div>
 {% endblock %}

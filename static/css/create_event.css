@@ -1,12 +1,47 @@
+body {
+  padding-top: 0px;
+  background-image: url("/static/img/ggbridge.jpg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+
+}
+
 .ceform {
-  padding: 0px 25px 0px 50px;
+    padding: 0px 25px 50px 50px;
+    background-color: #ffffff;
+    opacity: 0.9;
+}
+
+#header {
+  padding: 0px 0px 20px 0px;
+  text-align: left;
+  font-family: "Georgia", "Serif";
+  font-style: oblique;
+  font-size: 50px;
+  color: #7a5252;
 }
 
 input[type=text] {
     width: 50%;
     padding: 12px 20px;
     margin: 8px 0;
-    box-sizing: border-box;
+}
+
+input[type=date] {
+    width: 25%;
+    padding: 12px 20px;
+    margin: 8px 0;
+}
+input[type=time] {
+    width: 25%;
+    padding: 12px 20px;
+    margin: 8px 0;
+}
+input[type=textarea] {
+    width: 50%;
+    height: 10%;
+    padding: 12px 20px;
+    margin: 8px 0;
 }
 
 input[type=color] {
@@ -17,4 +52,36 @@ input[type=number] {
 }
 input[type=file] {
     width: 25%;
+}
+.error{
+    display: none;
+    margin-left: 10px;
+}
+.error_show{
+    color: red;
+    margin-left: 10px;
+}
+
+input.invalid, textarea.invalid{
+    border: 2px solid red;
+}
+
+input.valid, textarea.valid{
+    border: 2px solid green;
+}
+
+.btn {
+  width: 20%;
+  background-color:#7a5252;
+  border: none;
+  border-radius: 12px;;
+  padding: 15px 15px 15px 15px;
+  text-align: center;
+  font-family: "Georgia", "Serif";
+  font-style: oblique;
+  font-size: 15px;
+  color:#f2f2f2;
+  text-decoration: none;
+  display: inline-block;
+  margin: 25px 25px 25px 0px;
 }

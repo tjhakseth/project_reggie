@@ -249,8 +249,11 @@ def create_event():
 def create_registration_form():
     """Create event for registration form and landing page"""
 
-    # Get form variables
     company_id = session.get('company_id')
+    if not company_id:
+        raise Forbidden("Company is not logged in.")
+
+    errors = ''
     event_name = request.form['event_name']
     venue = request.form['venue']
     address = request.form['address']
@@ -267,33 +270,46 @@ def create_registration_form():
     logo = logo.filename
     price = request.form['price']
 
-    new_event = Event(
-        event_name=event_name,
-        company_id=company_id,
-        venue=venue,
-        address=address,
-        city=city,
-        state=state,
-        zipcode=zipcode,
-        start_date=start_date,
-        end_date=end_date,
-        start_time=start_time,
-        end_time=end_time,
-        description=description,
-        price=price,
-        color=color,
-        logo=logo
-    )
+    fields = [
+        event_name, venue, address, city, state, zipcode, start_date, end_date,
+        start_time, end_time, description, color, logo, price
+    ]
+    fields_empty = [not f for f in fields]
 
-    # Adding new event to the database
-    db.session.add(new_event)
-    db.session.commit()
+    if any(fields_empty):
+        errors = "errors"
+        flash("Please enter all required fields", "warning")
 
-    # If there is a logo, calls the upload file function
-    if logo:
-        upload_file()
+    if not errors:
+        new_event = Event(
+            event_name=event_name,
+            company_id=company_id,
+            venue=venue,
+            address=address,
+            city=city,
+            state=state,
+            zipcode=zipcode,
+            start_date=start_date,
+            end_date=end_date,
+            start_time=start_time,
+            end_time=end_time,
+            description=description,
+            price=price,
+            color=color,
+            logo=logo
+        )
 
-    return render_template("create_registration_form.html", new_event=new_event)
+        # Adding new event to the database
+        db.session.add(new_event)
+        db.session.commit()
+
+        # If there is a logo, calls the upload file function
+        if logo:
+            upload_file()
+
+        return render_template("create_registration_form.html", new_event=new_event)
+
+    return render_template("create_event.html", errors=errors)
 
 
 def allowed_file(filename):
