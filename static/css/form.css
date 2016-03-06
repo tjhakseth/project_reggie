@@ -6,16 +6,56 @@ body {
   background-opacity: 0.1
 
 }
+
 h1 {
   padding: 0px 200px 20px 200px;
   text-align: right;
   font-family: "Georgia", "Serif";
   font-style: oblique;
   font-size: 50px;
-  color: hsl(360, 45%, 30%);
+  color:#7a5252;
 }
 
+#header {
+    color:#7a5252;
+}
 form {
-  padding: 0px 0px 0px 850px;
+  padding: 0px 0px 0px 750px;
   text-align: left;
+}
+input[type=text] {
+    width: 200%;
+    padding: 0px 20px;
+    margin: 0px 0;
+    text-align: left;
+    font-size: 15px;
+}
+input[type=email] {
+    width: 200%;
+    padding: 0px 20px;
+    margin: 0px 0;
+    text-align: left;
+    font-size: 15px;
+}
+input[type=password] {
+    width: 200%;
+    padding: 0px 20px;
+    margin: 0px 0;
+    text-align: left;
+    font-size: 15px;
+}
+
+input[type=submit] {
+  width: 50%;
+  background-color:#7a5252;
+  border-radius: 12px;;
+  padding: 15px 15px 15px 15px;
+  text-align: center;
+  font-family: "Georgia", "Serif";
+  font-style: oblique;
+  font-size: 15px;
+  color:#f2f2f2;
+  text-decoration: none;
+  display: inline-block;
+  margin-top:0px;
 }

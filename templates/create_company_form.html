@@ -5,72 +5,38 @@
 
 {% block body %}
 <div class="container-fluid">
-<!-- <div class="well spaced" style="width:40%;"> -->
-<h1>Create Company Account</h1>
+<h1 id="header">Create Company Account</h1>
 
 <form action="/create_company" method="POST">
-
+    <div class="row  col-lg-12">
     <div class="form-group">
-        <label>
-            Company Name
-            <input type="text" name="companyname" class="form-control">
-        </label>
+          <label><input type="text" name="companyname" class="form-control" placeholder="Company Name"></label>
     </div>
-
-    <div class="form-group">
-        <label>
-            Company Email
-            <input type="email" name="companyemail" class="form-control">
-        </label>
-    </div>
-
-
-    <div class="form-group">
-        <label>
-            Contact Person
-            <input type="text" name="contactperson" class="form-control">
-        </label>
-    </div>
-
-    <div class="form-group">
-        <label>
-            Company phone
-            <input type="text" name="companyphone" class="form-control">
-        </label>
-    </div>
-
-    <div class="form-group">
-        <label>
-            Address
-            <input type="text" name="companyaddress" class="form-control">
-        </label>
     </div>
     <div class="form-group">
-        <label>
-            City
-            <input type="text" name="companycity" class="form-control">
-        </label>
+            <label><input type="email" name="companyemail" class="form-control"  placeholder="Company Email"></label>
     </div>
     <div class="form-group">
-        <label>
-            State
-            <input type="text" name="companystate" class="form-control">
-        </label>
+            <label><input type="text" name="contactperson" class="form-control" placeholder="Contact Person"></label>
     </div>
     <div class="form-group">
-        <label>
-            Zip
-            <input type="text" name="companyzip" class="form-control">
-        </label>
+            <label><input type="text" name="companyphone" class="form-control" placeholder="Company phone"></label>
     </div>
-
     <div class="form-group">
-        <label>
-            Password
-            <input type="password" name="password" class="form-control">
-        </label>
+        <label><input type="text" name="companyaddress" class="form-control" placeholder="Address"></label>
     </div>
-
+    <div class="form-group">
+        <label><input type="text" name="companycity" class="form-control" placeholder="City"></label>
+    </div>
+    <div class="form-group">
+        <label><input type="text" name="companystate" class="form-control" placeholder="State"></label>
+    </div>
+    <div class="form-group">
+        <label><input type="text" name="companyzip" class="form-control" placeholder="Zip"></label>
+    </div>
+    <div class="form-group">
+        <label><input type="password" name="password" class="form-control" placeholder="Password"></label>
+    </div>
     <div class="form-group">
         <input type="submit" value="Create a company account">
     </div>

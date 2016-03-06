@@ -5,21 +5,24 @@
 
 {% block body %}
 <h1 class="reggie">Reggie</h1>
-    <h4 class="littlereg">Customize Registration</h4>
+    <h4 class="littlereg">Beautify Registration</h4>
     <div class="container">
-        <div class="row">
-            <div class="col-xs-12 col-md-6 col-lg-6" id="company"> Company</div>
-            <div class="col-xs-12 col-md-6 col-lg-6" id="individual"> Individual</div>
+        <div class="row" id="test">
+         <div class="col-xs-12 col-md-6 col-lg-6" id="company">Design, build and customize event websites and registration forms. Dynamically interact with registration data to ensure a clean, accurate representation of data. </div>
         </div>
     </div>
     <div class="container">
         <div class="row">
-            <div class="col-xs-12 col-md-6 col-lg-6" class"test">
+            <div class="col-xs-12 col-md-6 col-lg-3">
                 <a href="/create_company">
                     <input type="button" value="Create Company Account" class="button"/>
                 </a>
             </div>
-            <div class="col-xs-12 col-md-6 col-lg-6">
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-md-6 col-lg-3">
                 <a href="/create_user">
                     <input type="button" value="Create Individual Account" class="button"/>
                 </a>
@@ -27,7 +30,7 @@
            
         </div>
     </div>
-    <div class="container">
+<!--     <div class="container">
         <div class="row">
             <div class="col-xs-12 col-md-6 col-lg-6">
                 <a href="/company_login">
@@ -41,7 +44,7 @@
             </div>
            
         </div>
-    </div>
+    </div> -->
 
 
 {% endblock %}
