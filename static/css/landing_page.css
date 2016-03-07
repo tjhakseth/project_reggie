@@ -1,3 +1,35 @@
-/*#map {
-    
-}*/
+#reg {
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-opacity: 0.1
+
+}
+.row{
+    padding: 50px;
+}
+
+#header {
+    text-align: left;
+    font-size: 50px;
+
+}
+p {
+    text-align: left;
+    font-size: 15px;
+
+}
+
+.button {
+  width: 50%;
+  border: none;
+  border-radius: 12px;;
+  padding: 15px 15px 15px 15px;
+  text-align: center;
+  font-family: "Georgia", "Serif";
+  font-style: oblique;
+  font-size: 15px;
+  color: black;
+  text-decoration: none;
+  display: inline-block;
+  margin: 25px 25px 25px 0px;
+}

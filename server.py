@@ -418,9 +418,9 @@ def get_data(event_id):
     chart_data['datasets'] = [
             {
                 "label": "Registrations",
-                "fillColor": "rgba(151,187,205,0.2)",
-                "strokeColor": "rgba(151,187,205,1)",
-                "pointColor": "rgba(151,187,205,1)",
+                "fillColor": "#e6e6e6",
+                "strokeColor": "#7a5252",
+                "pointColor": "#7a5252",
                 "pointStrokeColor": "#fff",
                 "pointHighlightFill": "#fff",
                 "pointHighlightStroke": "rgba(151,187,205,1)",

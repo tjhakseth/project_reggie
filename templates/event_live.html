@@ -24,7 +24,7 @@
 {% block body %}
 
 <div class="live">
-<div class="well spaced" style="background-color: {{ event.color }}">
+<div class="container-fluid" style="background-color: {{ event.color }}">
     {% if event.logo != None %}
         <img id="img" src="/static/uploads/{{ event.logo }}" alt="{{ event.logo }}" width="128" height="128"/>
     {% endif %}
@@ -82,7 +82,7 @@
                 data-key="pk_test_bREAtGbwzyYL8PEJODo2uZuI"
                 data-image="/static/uploads/{{ event.logo }}"
                 data-name="{{ event.event_name }}"
-                data-description="Pay me some money"
+                data-description="Registration Cost"
                 data-amount="{{ event.price * 100 }}"
                 data-locale="auto">
             </script>
@@ -93,7 +93,7 @@
         </div>
     </form>
     <nav>
-        <ul class="pager">
+        <ul class="pager" style="color: {{ event.color }}">
             <li><a href="/event_profile/{{ event.event_id }}/home">Event Home</a></li>
             <li><button type="button" id="previous">Previous</button></li>
             <li><button type="button" id="next">Next</button></li>

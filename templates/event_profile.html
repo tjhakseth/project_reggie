@@ -1,26 +1,32 @@
 
+
 <script src="https://code.jquery.com/jquery.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.js">
 </script>
 
+<link href="/static/css/event_profile.css" rel="stylesheet">
 
 {% extends 'base.html' %}
+
+
+
 {% block body %}
-
-<h2> {{ event.event_name }} Dashboard </h2>
-
+<div id="transbox">
+<div class="container-fluid">
+<h2 id="header"> {{ event.event_name }} Dashboard </h2>
   <div>
-    <a href="/event_profile/{{ event.event_id }}/home">Site</a>
-  </div>
-  <div>
-    <a href="/event_profile/{{ event.event_id }}/data">Registration Data</a>
+    <a href="/event_profile/{{ event.event_id }}/home">
+      <input type="button" value="View Site" class="button"/>
+    </a>
+    <a href="/event_profile/{{ event.event_id }}/data">
+      <input type="button" value="Registration Data" class="button"/>
+    </a>
   </div>
   <div>
     <p>Attendees Registered: {{ event.registrations|count }}</p>
     <p>Amount Collected: ${{ event.registrations|sum(attribute='event.price')}}</p>
   </div>
-
-    {% if event.registrations|count > 0 %}
+  {% if event.registrations|count > 0 %}
       <div class="event-chart" style= "width:500px;height:500px">
           <canvas id="lineChart"></canvas>
           
@@ -28,6 +34,9 @@
       </div>
     {% endif %}
 
+    
+</div>
+</div>
     <script>
     // Make Line Chart of Registrations over time
     var options = {
