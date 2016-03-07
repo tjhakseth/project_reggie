@@ -161,8 +161,8 @@ def process_create_user():
     # Get form variables
     user_firstname = request.form["user_firstname"]
     user_lastname = request.form["user_lastname"]
-    user_email = request.form["useremail"]
-    user_phone = request.form["userphone"]
+    user_email = request.form["user_email"]
+    user_phone = request.form["user_phone"]
     password = request.form["password"]
     password_bytes = password.encode('utf-8')
 

@@ -1,9 +1,24 @@
 .live {
   padding: 0px;
+  
 }
 .form {
-    margin: 5px;
+    margin: 5px 5px 20px 5px;
 
+}
+.page-header {
+  border-bottom: none !important;
+}
+
+h2 {
+  font-size: 50px !important;
+  text-align: center;
+}
+
+input[type=name] {
+    width: 25%;
+    padding: 12px 20px;
+    margin: 0px 0px 20px 0px;
 }
 
 input[type=text] {
@@ -22,15 +37,27 @@ input[type=textarea] {
     padding: 12px 20px;
     margin: 8px 0;
 }
+input[type=dropdown] {
+    width: 25%;
+    height: 10%;
+    padding: 12px 20px;
+    border-bottom:20px !important;
+
+}
 input[type=radio] {
     width: 1%;
     margin-bottom: 80px;
 
 }
+input[type=checkbox] {
+    width: 1%;
+    margin-bottom: 80px;
+
+}
 #previous {
-  width: 5%;
+  width: 8%;
   height: 3%;
-  background-color: #fff;
+  background-color: #e6e6e6;
   border: none;
   border-radius: 30px;;
   text-decoration: none;
@@ -40,7 +67,7 @@ input[type=radio] {
 #next {
   width: 5%;
   height: 3%;
-  background-color: #fff;
+  background-color: #e6e6e6;
   border: none;
   border-radius: 30px;;
   text-decoration: none;

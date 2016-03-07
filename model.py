@@ -29,7 +29,7 @@ class Company(db.Model):
 
     def __repr__(self):
         """Provides helpful representation when printed"""
-        return "<Company company_id=%s, company_name=%s, company_email%s>" % (self.company_id, self.company_name, self.company_email)
+        return "<Company company_id=%s, company_name=%s, company_email=%s>" % (self.company_id, self.company_name, self.company_email)
 
 
 class Event(db.Model):

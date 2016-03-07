@@ -7,17 +7,22 @@
 {% extends 'base.html' %}
 {% block body %}
 <div id="reg">
-<div class="container-fluid" style="background-image: url('/static/uploads/{{ event.logo }}')">
+<div class="container-fluid" style="background-color: {{ event.color }}">
+    {% if event.logo != None %}
     <div class="row">
-        <div class="col-lg-2">
-<!--         {% if event.logo != None %}
-            <img id="img" src="/static/uploads/{{ event.logo }}" alt="{{ event.logo }}"/>
-        {% endif %} -->
-        </div>
-        <div class="col-lg-12" style="color:{{ event.color }}">
-            <h2 id="header">{{ event.event_name }}</h2>
-        </div>
-        <div class="col-lg-6" style="color:{{ event.color }}">
+    <div class="col-xs-6 col-md-2">
+    <div class="thumbnail" style="color: {{ event.color }}">
+        <img id="img" src="/static/uploads/{{ event.logo }}" alt="{{ event.logo }}"/>
+    </div>
+    </div>
+    {% endif %}
+    <div class="col-xs-6 col-md-4">
+    <div class="page-header">
+        <h2>{{ event.event_name }}</h2>
+    </div>
+    </div>
+    </div>
+        <div class="col-lg-6">
             <p>{{ event.description }}</p>
             <p>Start: {{ event.start_date }} at {{ event.start_time }}</p>
             <p>End: {{ event.end_date }} at {{ event.end_time }}</p> 
@@ -30,7 +35,7 @@
         </div>
         <div class="col-lg-6">
             <a href="/event_profile/{{ event.event_id }}/live">
-                <input type="button" value="Register Now" class="button" style="background-color:{{ event.color }}"/>
+                <input type="button" value="Register Now" class="button" style="color:{{ event.color }}"/>
             </a>
         </div>
 </div>

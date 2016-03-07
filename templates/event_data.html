@@ -10,7 +10,7 @@
 
             <table class="table table-striped">
                 <tr>
-                    <th> {{ "User ID" }}</th>
+<!--                     <th> {{ "ID" }}</th> -->
                     {% for question in event.questions %}
                         <th> {{ question.label }}</th>
                     {% endfor %}
@@ -21,7 +21,7 @@
                 {% for registration in event.registrations %}
                 <tr>
 
-                    <td> {{ registration.user_id }}</td>
+<!--                     <td> {{ registration.id }}</td> -->
                     {% for answer in registration.answers|sort(attribute='question.ordinal') %}
                     <td>{{ answer.value }}</td>
                     {% endfor %}

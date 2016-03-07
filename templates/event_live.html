@@ -26,9 +26,20 @@
 <div class="live">
 <div class="container-fluid" style="background-color: {{ event.color }}">
     {% if event.logo != None %}
-        <img id="img" src="/static/uploads/{{ event.logo }}" alt="{{ event.logo }}" width="128" height="128"/>
+    <div class="row">
+    <div class="col-xs-6 col-md-2">
+    <div class="thumbnail" style="color: {{ event.color }}">
+        <img id="img" src="/static/uploads/{{ event.logo }}" alt="{{ event.logo }}"/>
+    </div>
+    </div>
+    <div class="col-xs-6 col-md-4">
+    <div class="page-header">
+        <h2>{{ event.event_name }}</h2>
+    </div>
+    </div>
+    </div>
     {% endif %}
-    <h2>{{ event.event_name }}</h2>
+
     <form action= "/event_profile/{{ event.event_id }}/live" method="POST">
         {% for question in event.questions %}
         <div class="form">
@@ -38,27 +49,55 @@
         </div>
         <div class="form">
             {% if question.label == "Name" %}
-                <input name="question" type="text" value="{{ user.user_firstname }}"/>
+                <div class="col-xs-12">
+                <input name="question" type="text" class="form-control" value="{{ user.user_firstname }}"/>
+            </div>
+
             {% elif question.label == "Email" %}
-                <input name="question" type="email" value=" {{ user.user_email }}"/>
-            {% elif question.selector == "Text" %}
-                <input name="question" type="text"/>
+                <div class="col-xs-12">
+                <input name="question" type="email" class="form-control" value=" {{ user.user_email }}"/>
+                </div>
+
+            {% elif question.selector == "Text" %}  
+                <div class="col-xs-12">
+                <input name="question" class="form-control" type="text"/>
+                </div>
+
+
             {% elif question.selector == "Large Text" %}
-                <input name="question" type="textarea"/>
+                <div class="col-xs-12">
+                <input name="question" class="form-control" type="textarea"/>
+                </div>
+
+
             {% elif question.selector == "Dropdown" %}
-                <select name="question">
+                <div class="col-xs-12">
+                <select name="question" class="form-control">
                     {% for option in question.data %}
                         <option>{{ option }}</option>
                     {% endfor %}
                 </select>
+                </div>
+
+
             {% elif question.selector == "Radio Button" %}
                 {% for option in question.data %}
-                    <input name="question" type="radio" value="{{ option }}" />{{ option }}
+                <label class="radio-inline">
+                    <input name="question"  class="form-control" type="radio" value="{{ option }}" />{{ option }}
+                </lable>
                 {% endfor %}
+
+
+
             {% elif question.selector == "Checkbox" %}
                 {% for option in question.data %}
-                    <input name="question" type="checkbox" value="{{ option }}"/>{{ option }}
+                <label class="checkbox-inline">
+                    <input name="question" class="form-control" type="checkbox" value="{{ option }}"/>{{ option }}
+                </label>
                 {% endfor %}
+
+
+                
             {% else %}
                 <p> I dunno what you are talking about</p>
             {% endif %}
