@@ -21,6 +21,15 @@ body {
   color: #7a5252;
 }
 
+#littleheader {
+  padding: 0px 0px 20px 0px;
+  text-align: left;
+  font-family: "Georgia", "Serif";
+  font-style: oblique;
+  font-size: 20px;
+  color: #7a5252;
+}
+
 input[type=text] {
     width: 50%;
     padding: 12px 20px;

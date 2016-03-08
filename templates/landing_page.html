@@ -21,23 +21,27 @@
         <h2>{{ event.event_name }}</h2>
     </div>
     </div>
-    </div>
+    </div> 
+        <div class="row">
         <div class="col-lg-6">
             <p>{{ event.description }}</p>
             <p>Start: {{ event.start_date }} at {{ event.start_time }}</p>
             <p>End: {{ event.end_date }} at {{ event.end_time }}</p> 
             <p>Location: {{ event.venue }}</p>
+            <span><a href="/event_profile/{{ event.event_id }}/live">
+                <input type="button" value="Register Now" class="button" style="color:{{ event.color }}"/>
+            </a></span>
         </div>
-        <div class="col-lg-12">
+        <div class="col-lg-6">
             <div id="map">
                 <img src="https://maps.googleapis.com/maps/api/staticmap?center={{event.address}}&zoom=14&size=400x400&markers=color:red%7Clabel:A%7C{{event.address}},{{event.state}}&key=AIzaSyAK8OzEqj6R1Ln2oRPzUN6BsgekqdhtxFY">
             </div>
         </div>
-        <div class="col-lg-6">
-            <a href="/event_profile/{{ event.event_id }}/live">
-                <input type="button" value="Register Now" class="button" style="color:{{ event.color }}"/>
-            </a>
+    
+        
+        
         </div>
+        
 </div>
 
 {% endblock %}

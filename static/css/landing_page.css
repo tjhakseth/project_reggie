@@ -1,3 +1,11 @@
+#map{
+  padding-bottom: 25px;
+}
+.row{
+  margin-left: 0px  !important;
+  margin-top: 10px;
+
+}
 .page-header {
   border-bottom: none !important;
 }
@@ -10,6 +18,8 @@ h2 {
 p {
     text-align: left;
     font-size: 15px;
+    font-weight: bold;
+    padding: 0px 0px 20px 0px;
 
 }
 
@@ -26,5 +36,5 @@ p {
   color: black;
   text-decoration: none;
   display: inline-block;
-  margin: 25px 25px 25px 0px;
+  margin: 25px 25px 25px 50px;
 }

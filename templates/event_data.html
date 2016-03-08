@@ -1,38 +1,42 @@
+<link href="/static/css/event_data.css" rel="stylesheet">
 
 {% extends 'base.html' %}
 {% block body %}
 
 
-<div class="well spaced">
-    <h2>{{ event.event_name }}</h2>
-    <p>Attendees Registered: {{ event.registrations|count }}</p>
-    <p>Amount Collected: ${{ event.registrations|sum(attribute='event.price')}}</p>
+<div class="transbox">
+<div class="container-fluid">
+    <h2 class="header">{{ event.event_name }}</h2>
+    <p class="littleheader">Attendees Registered: {{ event.registrations|count }}</p>
+    <p class="littleheader">Amount Collected: ${{ event.registrations|sum(attribute='event.price')}}</p>
 
             <table class="table table-striped">
                 <tr>
-<!--                     <th> {{ "ID" }}</th> -->
+
                     {% for question in event.questions %}
                         <th> {{ question.label }}</th>
                     {% endfor %}
                     <th>Payment</th>
-                    <th>Edit Record</th>
+                    <th>Access Record</th>
                 </tr>
 
                 {% for registration in event.registrations %}
                 <tr>
 
-<!--                     <td> {{ registration.id }}</td> -->
+
                     {% for answer in registration.answers|sort(attribute='question.ordinal') %}
                     <td>{{ answer.value }}</td>
                     {% endfor %}
                     <td>{{ event.price }}</td>
-                    <td> <a href="/event_profile/{{ event.event_id }}/data/{{ registration.id }}">Edit Record</a> </td>   
+                    <td> <a href="/event_profile/{{ event.event_id }}/data/{{ registration.id }}">Access Record</a> </td>   
                 </tr>
                 {% endfor %}
      
             </table>
 
 
-    <a href="/event_profile/{{ event.event_id }}/csvdata" name="downloadcsv">Download to CSV</a>
+    <a href="/event_profile/{{ event.event_id }}/csvdata" name="downloadcsv">
+        <input type="button" value="Export to CSV" class="button"/>
+    </a>
         
 {% endblock %}

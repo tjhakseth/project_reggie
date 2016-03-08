@@ -7,34 +7,34 @@ body {
 
 }
 
-#transbox {
+.transbox {
     margin: 25px 25px 25px 25px;
+    padding-bottom: 25px;
     background-color: #ffffff;
     opacity: 0.95;
 }
 
-#header {
+.header {
   padding: 0px 0px 20px 0px;
   text-align: left;
   font-family: "Georgia", "Serif";
   font-style: oblique;
-  font-size: 50px;
+  font-size: 30px;
   color: #7a5252;
 }
 
-
-p{
+.littleheader {
+  padding: 0px 0px 0px 40px;
   text-align: left;
   font-family: "Georgia", "Serif";
   font-style: oblique;
   font-size: 20px;
+  font-weight: bold;
   color: #7a5252;
-
 }
 
-
 .button {
-  width: 15%;
+  width: 20%;
   background-color:#7a5252;
   border: none;
   border-radius: 12px;;
@@ -48,3 +48,21 @@ p{
   display: inline-block;
   margin: 25px 25px 25px 0px;
 }
+
+input[type=submit] {
+     width: 20%;
+  background-color:#7a5252;
+  border: none;
+  border-radius: 12px;;
+  padding: 15px 15px 15px 15px;
+  text-align: center;
+  font-family: "Georgia", "Serif";
+  font-style: oblique;
+  font-size: 15px;
+  color:#f2f2f2;
+  text-decoration: none;
+  display: inline-block;
+  margin: 25px 25px 25px 0px;
+}
+}
+

@@ -1,11 +1,13 @@
+<link href="/static/css/event_data.css" rel="stylesheet">
+
 {% extends 'base.html' %}
 {% block body %}
 
 
-<div class="well spaced">
-    <h2>Attendee: {{ registration.user.user_firstname }}</h2>
-    </br>
-    <h2> Event: {{ registration.event.event_name }}</h2>
+<div class="transbox">
+<div class="container-fluid">
+    <h2 class="header">Attendee: {{ registration.user.user_firstname }}</h2>
+    <h2 class="header"> Event: {{ registration.event.event_name }}</h2>
 
     <table class="table table-striped">
         <tr>
@@ -20,7 +22,7 @@
                 <td> {{ answer.value }}</td>   
             {% endfor %}
                 <td> {{ registration.event.price }}</td>
-                <td><a href="/event_profile/{{ registration.event.event_id }}/data/{{ registration.id}}/edit" class="btn btn-info" role="button">Edit</a></td>
+                <td><a href="/event_profile/{{ registration.event.event_id }}/data/{{ registration.id}}/edit">Edit</a></td>
         </tr>    
     </table>
     <form action="/event_profile/{{ registration.event.event_id }}/data/{{ registration.id}}/delete" method='POST'>

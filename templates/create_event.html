@@ -5,72 +5,73 @@
 {% block body %}
 <div class="ceform">
 <h1 id="header">Create Event</h1>
+    <h3 id="littleheader">Please fill in all fields to create the event home page</h3>
     <form action="/create_reg" method="POST" id="contact" enctype="multipart/form-data">
         <div class="form-group">
             <label for="eventname">Event name</label>
-            <input type="text" name="event_name" id="event_name" class="form-control" placeholder="Event Name">
+            <input type="text" name="event_name" id="event_name" class="form-control fields" placeholder="Event Name">
             <span class="error">This field is required</span>
         </div>
         <div class="form-group">
             <label for="venue">Venue</label>
-            <input type="text" name="venue" class="form-control" placeholder="Venue">
+            <input type="text" name="venue" class="form-control fields" placeholder="Venue">
             <span class="error">This field is required</span>
         </div>
         <div class="form-group">
             <label for="address">Address</label>
-            <input type="text" name="address" class="form-control" placeholder="Address">
+            <input type="text" name="address" class="form-control fields" placeholder="Address">
             <span class="error">This field is required</span>
         </div>
         <div class="form-group">
             <label for="city">City</label>
-            <input type="text" name="city" class="form-control" placeholder="City">
+            <input type="text" name="city" class="form-control fields" placeholder="City">
             <span class="error">This field is required</span>
         </div>
         <div class="form-group">
             <label for="state">State</label>
-            <input type="text" name="state" class="form-control" placeholder="State">
+            <input type="text" name="state" class="form-control fields" placeholder="State">
             <span class="error">This field is required</span>
         </div>
         <div class="form-group">
             <label for="zipcode">Zipcode</label>
-            <input type="text" name="zipcode" class="form-control" placeholder="Zipcode">
+            <input type="text" name="zipcode" class="form-control fields" placeholder="Zipcode">
             <span class="error">This field is required</span>
         </div>
         <div class="form-group">
             <label for="description">Description</label>
-            <input type="textarea" name="description" class="form-control">
+            <input type="textarea" name="description" class="form-control fields">
         </div>
        <div class="form-group">
             <label for="datetime">Start Date</label>
-            <input type="date" name="startdate" class="form-control">
+            <input type="date" name="startdate" class="form-control fields">
             <span class="error">This field is required</span>
         </div>
         <div class="form-group">
             <label for="datetime">End Date</label>
-            <input type="date" name="enddate" class="form-control">
+            <input type="date" name="enddate" class="form-control fields">
             <span class="error">This field is required</span>
         </div>
         <div class="form-group">
             <label for="datetime">Start Time</label>
-            <input type="time" name="starttime" class="form-control">
+            <input type="time" name="starttime" class="form-control fields">
             <span class="error">This field is required</span>
         </div>
         <div class="form-group">
             <label for="datetime">End Time</label>
-            <input type="time" name="endtime" class="form-control">
+            <input type="time" name="endtime" class="form-control fields">
             <span class="error">This field is required</span>
         </div>
         <div class="form-group">
             <label for="price">Price for Registration</label>
-            <input type="number" class="form-control" name="price">
+            <input type="number" class="form-control fields" name="price">
         </div>
         <div class="form-group">
             <label for="selectbackgroundcolor">Select background color</label>
-            <input type="color" name="color" class="form-control" value="#ff0000">
+            <input type="color" name="color" class="form-control fields" value="#ff0000">
         </div>
         <div class="form-group">
             <label for="logo">Logo</label>
-            <input type="file" name="logo" class="form-control" id="file" accept"image/*">
+            <input type="file" name="logo" class="form-control fields" id="file" accept"image/*">
         </div>
         <button type="submit" class="btn">Create Registration Form</button>
    
@@ -79,7 +80,7 @@
     <script src="https://code.jquery.com/jquery-2.2.0.min.js" type="text/javascript" charset="utf-8"></script>
     <script>
         $(document).ready(function() {
-            $('#event_name').on('input', function() {
+            $('.fields').on('input', function() {
                 var input=$(this);
                 var is_name=input.val();
                 if(is_name){input.removeClass("invalid").addClass("valid");}
