@@ -54,6 +54,15 @@ input[type=checkbox] {
     margin-bottom: 80px;
 
 }
+#eventhome {
+  width: 8%;
+  height: 3%;
+  background-color: #e6e6e6;
+  border: none;
+  border-radius: 30px;;
+  text-decoration: none;
+  display: inline-block;
+}
 #previous {
   width: 8%;
   height: 3%;

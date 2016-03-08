@@ -14,7 +14,7 @@ Reggie was created by an event program manager for event professionals. This app
 * JSON
 * Ajax
 * Flask
-* SQLite
+* Postgres
 * Bootstrap
 * Chart.js
 * CSS
@@ -36,6 +36,7 @@ Company users can sign up, login, and logout, as well as update their profiles.
 Users can sign up, login, and logout, as well as update their profiles.
 
 #### Build Event
+![alt text](https://raw.githubusercontent.com/tjhakseth/project_reggie/master/static/readme/createevent.gif "Create Event")
 
 Company users can create event which will build the event homepage for the registrants.
 
@@ -72,4 +73,4 @@ A table view of the registration data, which allows company users to update or d
 
 ## About the Developer
 Tiffany Hakseth is a software engineer living in San Francisco.
-* Learn more about the developer: https://www.linkedin.com/in/tiffanyhakseth
+Learn more about the developer: https://www.linkedin.com/in/tiffanyhakseth
