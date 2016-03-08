@@ -17,7 +17,7 @@
                         <th> {{ question.label }}</th>
                     {% endfor %}
                     <th>Payment</th>
-                    <th>Access Record</th>
+                    <th>Edit/Delete Record</th>
                 </tr>
 
                 {% for registration in event.registrations %}
@@ -28,7 +28,7 @@
                     <td>{{ answer.value }}</td>
                     {% endfor %}
                     <td>{{ event.price }}</td>
-                    <td> <a href="/event_profile/{{ event.event_id }}/data/{{ registration.id }}">Access Record</a> </td>   
+                    <td> <a href="/event_profile/{{ event.event_id }}/data/{{ registration.id }}">Edit/Delete</a> </td>   
                 </tr>
                 {% endfor %}
      

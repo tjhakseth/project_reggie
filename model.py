@@ -143,10 +143,11 @@ class User(db.Model):
 ##############################################################################
 # Helper functions
 
-def connect_to_db(app):
+def connect_to_db(app, connection_string='postgresql:///reggiedb'):
     """Connect the database to our Flask app."""
     # Configure to use our PostgreSQL database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///reggiedb'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_DATABASE_URI'] = connection_string
     # app.config['SQLALCHEMY_ECHO'] = True
     db.app = app
     db.init_app(app)

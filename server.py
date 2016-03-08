@@ -6,7 +6,7 @@ import os
 # third party
 import bcrypt
 from csvkit import CSVKitWriter
-from flask import Flask, Response, render_template, request, flash, redirect, session, jsonify, send_from_directory
+from flask import Flask, Response, render_template, request, flash, redirect, session, jsonify, send_from_directory, url_for
 from flask_debugtoolbar import DebugToolbarExtension
 from flask.ext.mail import Mail, Message
 from jinja2 import StrictUndefined
@@ -707,7 +707,7 @@ if __name__ == "__main__":
 
     connect_to_db(app)
 
-    # Use the DebugToolbar
-    DebugToolbarExtension(app)
+    # # Use the DebugToolbar
+    # DebugToolbarExtension(app)
 
     app.run()

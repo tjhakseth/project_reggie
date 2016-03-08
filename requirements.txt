@@ -12,3 +12,4 @@ Jinja2==2.8
 MarkupSafe==0.23
 Werkzeug==0.11.3
 wheel==0.24.0
+Flask-Testing==0.4.2
