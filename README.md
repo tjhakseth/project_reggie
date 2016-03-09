@@ -36,7 +36,7 @@ Company users can sign up, login, and logout, as well as update their profiles.
 Users can sign up, login, and logout, as well as update their profiles.
 
 #### Build Event
-![alt text](https://raw.githubusercontent.com/tjhakseth/project_reggie/master/static/readme/createevent.gif "Create Event")
+![alt text](https://raw.githubusercontent.com/tjhakseth/project_reggie/master/static/readme/createevent3.gif "Create Event")
 
 Company users can create event which will build the event homepage for the registrants.
 
