@@ -71,7 +71,7 @@
 
 
             {% elif question.selector == "Dropdown" %}
-                <div class="col-xs-12">
+                <div class="col-xs-12 col-md-12">
                 <select name="question" class="form-control">
                     {% for option in question.data %}
                         <option>{{ option }}</option>
