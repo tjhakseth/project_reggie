@@ -40,7 +40,7 @@ Users can sign up, login, and logout, as well as update their profiles.
 Company users can create event which will build the event homepage for the registrants.
 
 #### Build Registration
-![alt text](https://raw.githubusercontent.com/tjhakseth/project_reggie/master/static/readme/regform.mov "Create Registration Form")
+![alt text](https://raw.githubusercontent.com/tjhakseth/project_reggie/master/static/readme/regform.gif "Create Registration Form")
 Company users can create a registration form which will build the registration flow for attendees to register for the event.
 
 #### View Event Dashboard
