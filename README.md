@@ -31,7 +31,6 @@ Reggie was created by an event program manager for event professionals. This app
 ## Feature List
 #### User Accounts
 ![alt text](https://raw.githubusercontent.com/tjhakseth/project_reggie/master/static/readme/createcompany.png "Create Company")
-Users can search for different geographic areas using Google Maps Autocomplete and the recreation areas nearby are marked on a customized Google Map.
 Company users can sign up, login, and logout, as well as update their profiles.
 Users can sign up, login, and logout, as well as update their profiles.
 
@@ -41,7 +40,7 @@ Users can sign up, login, and logout, as well as update their profiles.
 Company users can create event which will build the event homepage for the registrants.
 
 #### Build Registration
-![alt text](https://raw.githubusercontent.com/tjhakseth/project_reggie/master/static/readme/regform.gif "Create Registration Form")
+![alt text](https://raw.githubusercontent.com/tjhakseth/project_reggie/master/static/readme/createregform.gif "Create Registration Form")
 
 Company users can create a registration form which will build the registration flow for attendees to register for the event.
 
@@ -54,6 +53,7 @@ Allows company users to view the event site and view/manipulate the data. A Char
 The event homepage that was created by the company user to inform attendees about the event specifics.
 
 #### Register For Event
+![alt text](https://raw.githubusercontent.com/tjhakseth/project_reggie/master/static/readme/regform.gif "Live Registration Form")
 
 The registration form that was created by the company user to register attendees to the event.
 
