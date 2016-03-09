@@ -159,8 +159,7 @@ def process_create_user():
     """Process a newly created user"""
 
     # Get form variables
-    user_firstname = request.form["user_firstname"]
-    user_lastname = request.form["user_lastname"]
+    user_name = request.form["user_name"]
     user_email = request.form["user_email"]
     user_phone = request.form["user_phone"]
     password = request.form["password"]
@@ -169,8 +168,7 @@ def process_create_user():
     # Hashing the password
     hashed = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
 
-    new_user = User(user_firstname=user_firstname,
-                    user_lastname=user_lastname,
+    new_user = User(user_name=user_name,
                     user_email=user_email,
                     user_phone=user_phone,
                     password=hashed)

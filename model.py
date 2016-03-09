@@ -128,8 +128,7 @@ class User(db.Model):
     __tablename__ = "users"
 
     user_id = db.Column(UUID, server_default=text("uuid_generate_v4()"), primary_key=True)
-    user_firstname = db.Column(db.String(100), nullable=False)
-    user_lastname = db.Column(db.String(100), nullable=False)
+    user_name = db.Column(db.String(100), nullable=False)
     user_email = db.Column(db.String(100), nullable=False)
     user_phone = db.Column(db.String(30))
     password = db.Column(db.String(100))
@@ -137,7 +136,7 @@ class User(db.Model):
     def __repr__(self):
         """Provides helpful representation when printed"""
 
-        return "<User user_id=%s, user_firstname=%s, user_email=%s>" % (self.user_id, self.user_firstname, self.user_email)
+        return "<User user_id=%s, user_name=%s, user_email=%s>" % (self.user_id, self.user_name, self.user_email)
 
 
 ##############################################################################
