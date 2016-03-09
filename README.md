@@ -37,10 +37,12 @@ Users can sign up, login, and logout, as well as update their profiles.
 
 #### Build Event
 ![alt text](https://raw.githubusercontent.com/tjhakseth/project_reggie/master/static/readme/createevent.gif "Create Event")
+
 Company users can create event which will build the event homepage for the registrants.
 
 #### Build Registration
 ![alt text](https://raw.githubusercontent.com/tjhakseth/project_reggie/master/static/readme/regform.gif "Create Registration Form")
+
 Company users can create a registration form which will build the registration flow for attendees to register for the event.
 
 #### View Event Dashboard
@@ -48,7 +50,7 @@ Company users can create a registration form which will build the registration f
 Allows company users to view the event site and view/manipulate the data. A Chart.js line chart represents a registrations for the event. 
 
 #### View Live Event Homepage
-
+![alt text](https://raw.githubusercontent.com/tjhakseth/project_reggie/master/static/readme/eventhomepage.png "Event Homepage")
 The event homepage that was created by the company user to inform attendees about the event specifics.
 
 #### Register For Event
