@@ -16,23 +16,19 @@ h2 {
 }
 
 input[type=name] {
-    width: 25%;
     padding: 12px 20px;
     margin: 0px 0px 20px 0px;
 }
 
 input[type=text] {
-    width: 25%;
     padding: 12px 20px;
     margin: 8px 0;
 }
 input[type=email] {
-    width: 25%;
     padding: 12px 20px;
     margin: 8px 0;
 }
 input[type=textarea] {
-    width: 25%;
     height: 10%;
     padding: 12px 20px;
     margin: 8px 0;
@@ -52,34 +48,5 @@ input[type=radio] {
 input[type=checkbox] {
     width: 1%;
     margin-bottom: 80px;
-
-}
-#eventhome {
-  width: 8%;
-  height: 3%;
-  background-color: #e6e6e6;
-  border: none;
-  border-radius: 30px;;
-  text-decoration: none;
-  display: inline-block;
-}
-#previous {
-  width: 8%;
-  height: 3%;
-  background-color: #e6e6e6;
-  border: none;
-  border-radius: 30px;;
-  text-decoration: none;
-  display: inline-block;
-
-}
-#next {
-  width: 5%;
-  height: 3%;
-  background-color: #e6e6e6;
-  border: none;
-  border-radius: 30px;;
-  text-decoration: none;
-  display: inline-block;
 
 }

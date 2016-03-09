@@ -1,3 +1,6 @@
+{% extends 'base.html' %}
+
+{% block body %}
 
 <link href="/static/css/live_registration_form.css" rel="stylesheet">
 
@@ -20,8 +23,15 @@
 
 </script>
 
-{% extends 'base.html' %}
-{% block body %}
+<style type="text/css" media="screen">
+/*    body {
+        background-color: {{ event.color }};
+    }*/
+
+    .pager li a {
+        color: {{ event.color }};
+    }   
+</style>
 
 <div class="live">
 <div class="container-fluid" style="background-color: {{ event.color }}">
@@ -40,102 +50,87 @@
     </div>
     {% endif %}
 
-    <form action= "/event_profile/{{ event.event_id }}/live" method="POST">
-        {% for question in event.questions %}
-        <div class="form">
-            <label for="questions_{{ question.ordinal }}">
-                {{ question.label }}
-            </label>
-        </div>
-        <div class="form">
-            {% if question.label == "Name" %}
-                <div class="col-xs-12">
+    <div class="row">
+        <form action= "/event_profile/{{ event.event_id }}/live" class="col-xs-6" method="POST">
+            {% for question in event.questions %}
+            <div class="form">
+<!--                 <label for="questions_{{ question.ordinal }}">
+                    {{ question.label }}
+                </label>
+ -->                <h4>{{question.label}}</h4>
+                {% if question.label == "Name" %}
                 <input name="question" type="text" class="form-control" value="{{ user.user_name }}"/>
-            </div>
 
-            {% elif question.label == "Email" %}
-                <div class="col-xs-12">
+                {% elif question.label == "Email" %}
                 <input name="question" type="email" class="form-control" value=" {{ user.user_email }}"/>
-                </div>
 
-            {% elif question.selector == "Text" %}  
-                <div class="col-xs-12">
+                {% elif question.selector == "Text" %}  
                 <input name="question" class="form-control" type="text"/>
-                </div>
 
-
-            {% elif question.selector == "Large Text" %}
-                <div class="col-xs-12">
+                {% elif question.selector == "Large Text" %}
                 <input name="question" class="form-control" type="textarea"/>
-                </div>
 
 
-            {% elif question.selector == "Dropdown" %}
-                <div class="col-xs-12 col-md-12">
+                {% elif question.selector == "Dropdown" %}
                 <select name="question" class="form-control">
                     {% for option in question.data %}
                         <option>{{ option }}</option>
                     {% endfor %}
                 </select>
-                </div>
 
 
-            {% elif question.selector == "Radio Button" %}
-                {% for option in question.data %}
-                <label class="radio-inline">
-                    <input name="question"  class="form-control" type="radio" value="{{ option }}" />{{ option }}
-                </lable>
-                {% endfor %}
+                {% elif question.selector == "Radio Button" %}
+                    {% for option in question.data %}
+                    <label class="radio-inline">
+                        <input name="question" type="radio" value="{{ option }}" />{{ option }}
+                    </label>
+                    {% endfor %}
 
-
-
-            {% elif question.selector == "Checkbox" %}
-                {% for option in question.data %}
-                <label class="checkbox-inline">
-                    <input name="question" class="form-control" type="checkbox" value="{{ option }}"/>{{ option }}
-                </label>
-                {% endfor %}
-
-
-                
+                {% elif question.selector == "Checkbox" %}
+                    {% for option in question.data %}
+                    <label class="checkbox-inline">
+                        <input name="question" type="checkbox" value="{{ option }}"/>{{ option }}
+                    </label>
+                    {% endfor %}                
+                {% else %}
+                    <p> I dunno what you are talking about</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+            
+            <div id="payment">
+            {% if event.price > 0 %}
+                <table class="table table-striped">
+                    <tr>
+                        <th>Item</th>
+                        <th>Price</th>
+                    </tr>
+                    <tr>
+                        <td> {{ event.event_name }}</td>
+                        <td> {{ event.price }}   
+                    </tr>    
+                </table>
+                <script
+                    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                    data-key="pk_test_bREAtGbwzyYL8PEJODo2uZuI"
+                    data-image="/static/uploads/{{ event.logo }}"
+                    data-name="{{ event.event_name }}"
+                    data-description="Registration Cost"
+                    data-amount="{{ event.price * 100 }}"
+                    data-locale="auto">
+                </script>
             {% else %}
-                <p> I dunno what you are talking about</p>
+                <input type="submit" value="Submit Registration"/>
             {% endif %}
-        </div>
-        {% endfor %}
-        
-        <div id="payment">
-        {% if event.price > 0 %}
-            <table class="table table-striped">
-                <tr>
-                    <th>Item</th>
-                    <th>Price</th>
-                </tr>
-                <tr>
-                    <td> {{ event.event_name }}</td>
-                    <td> {{ event.price }}   
-                </tr>    
-            </table>
-            <script
-                src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                data-key="pk_test_bREAtGbwzyYL8PEJODo2uZuI"
-                data-image="/static/uploads/{{ event.logo }}"
-                data-name="{{ event.event_name }}"
-                data-description="Registration Cost"
-                data-amount="{{ event.price * 100 }}"
-                data-locale="auto">
-            </script>
-        {% else %}
-            <input type="submit" value="Submit Registration"/>
-        {% endif %}
 
-        </div>
-    </form>
-    <nav>
-        <ul class="pager" style="color: {{ event.color }}">
+            </div>
+        </form>
+    </div>
+    <nav class="row" role="navigation">
+        <ul class="pager">
             <li><a href="/event_profile/{{ event.event_id }}/home">Event Home</a></li>
-            <li><button type="button" id="previous">Previous</button></li>
-            <li><button type="button" id="next">Next</button></li>
+            <li><a id="previous">Previous</a></li>
+            <li><a id="next">Next</a></li>
         </ul>
     </nav>
 </div>
